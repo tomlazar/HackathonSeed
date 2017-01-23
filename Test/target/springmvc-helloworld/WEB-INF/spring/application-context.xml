@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Necessary to get the application version information for display on the main page.-->
+	<bean id="SpringService"  class="com.johnathanmsmith.mvc.web.modules.SpringServiceImpl">
+	 	<property name="sonarURL" value="http://g2302usdpoc0001.logon.ds.ge.com:9000"/> <!-- using EFS Dev server until Treasury has EFS specific Sonar instance -->
+	 	<!--  Treasury server requires basic auth credentials to retrieve JSON body from web service -->
+	 	<!-- <username>:<password> is base64 encoded in UTF-8 through postman (other online encoding tools can work as well) -->
+	 	<property name="sonarAuth" value="Basic ZWZzOjNmczRkbTFu"/>
+	</bean>
+
+</beans>

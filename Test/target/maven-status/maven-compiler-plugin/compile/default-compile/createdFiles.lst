@@ -1,0 +1,4 @@
+com\johnathanmarksmith\mvc\web\modules\SpringService.class
+com\johnathanmarksmith\mvc\web\config\WebMVCConfig.class
+com\johnathanmarksmith\mvc\web\modules\SpringController.class
+com\johnathanmarksmith\mvc\web\modules\SpringServiceImpl.class
