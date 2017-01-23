@@ -1,0 +1,19 @@
+{
+  "name": "dtlp_pett",
+  "version": "1.0.0",
+  "description": "PETT Project Web Repo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.build.ge.com/212462117/DTLP_PETT.git"
+  },
+  "author": "DTH_DTLPs",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "request": "^2.78.0"
+  }
+}
