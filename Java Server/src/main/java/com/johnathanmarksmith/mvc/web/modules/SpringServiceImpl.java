@@ -36,7 +36,7 @@ public class SpringServiceImpl implements SpringService {
 	public String getAuthToken(String url) throws IOException {
 		// Reset the token if method has been previously invoked
 		access_token = "";
-		// Add the UAA username as a parameter 'client_id'
+		// Add the UAA grant type as a parameter to the URL
 		url += "?grant_type=client_credentials";
 		// Create a URL Object from the concatenated UAA URL
 		URL obj = new URL(url);
@@ -48,6 +48,7 @@ public class SpringServiceImpl implements SpringService {
 
 		//add request header
 		con.setRequestProperty("Accept", "application/json, application/x-www-form-urlencoded");
+		// base-64 encoded username/password
 		con.setRequestProperty("Authorization", "Basic YXBwX2NsaWVudF9pZDpzZWNyZXQ=");
 		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 							
