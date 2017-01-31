@@ -2,6 +2,8 @@ package com.johnathanmarksmith.mvc.web.modules;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+
 
 
 /*
@@ -15,15 +17,15 @@ public interface SpringService {
 	 * @param url - The URL to invoke the HTTP request to
 	 * @return String - the authentication token
 	 */
-	public String getAuthToken(String url) throws IOException;
+	public String getAuthToken(String url) throws IOException, JSONException;
 	
 	/*
 	 * Get the data from the time series service
 	 * @param URL - the URL to invoke the HTTP request to
 	 * @return String - The stringified JSON object
 	 */
-	public String getData(String url) throws IOException;
-	
+	public String getData(String url) throws IOException, JSONException;
+
 
 }
 
