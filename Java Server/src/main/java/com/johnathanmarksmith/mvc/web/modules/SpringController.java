@@ -37,7 +37,7 @@ class SpringController
     public @ResponseBody String getAuthToken() throws IOException
     {
     	// Invoke the service to return the token
-    	return springService.getAuthToken("https://df1e4f24-d699-4fef-a783-916e727ea2a5.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token");
+    	return springService.getAuthToken("https://98d4176d-a268-405b-a461-3f9944793a31.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token");
     	
     }
     
