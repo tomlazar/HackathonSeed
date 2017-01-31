@@ -7,6 +7,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 /*
@@ -18,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class SpringServiceImpl implements SpringService {
 	// variable to hold the access token
 	private String access_token = "";
-	
 	/*
 	 * Get the access token for time series connection
 	 * @return the user authentication token
@@ -33,10 +35,10 @@ public class SpringServiceImpl implements SpringService {
 	 * @param URL - the UAA URL to invoke the HTTP post request to
 	 * @return - The user authentication token
 	 */
-	public String getAuthToken(String url) throws IOException {
+	public String getAuthToken(String url) throws IOException, JSONException {
 		// Reset the token if method has been previously invoked
 		access_token = "";
-		// Add the UAA grant type as a parameter to the URL
+		// Add the UAA username as a parameter 'client_id'
 		url += "?grant_type=client_credentials";
 		// Create a URL Object from the concatenated UAA URL
 		URL obj = new URL(url);
@@ -48,7 +50,6 @@ public class SpringServiceImpl implements SpringService {
 
 		//add request header
 		con.setRequestProperty("Accept", "application/json, application/x-www-form-urlencoded");
-		// base-64 encoded username/password
 		con.setRequestProperty("Authorization", "Basic YXBwX2NsaWVudF9pZDpzZWNyZXQ=");
 		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 							
@@ -59,7 +60,17 @@ public class SpringServiceImpl implements SpringService {
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		// Variable will be used to parse response
 		String inputLine;
-			
+		// OPTION 1: Use JSON Object to read response body
+		JSONObject test = new JSONObject(in.readLine());
+		access_token = test.getString("access_token");
+		// Close the buffered reader
+		in.close();
+		// Close the connection object
+		con.disconnect();
+		// Return the token to the method caller
+		return access_token;
+		/*
+		// OPTION 2: Loop through entire body and parse string
 		// We're going to look for the phrase "access_token":"
 		// This will tell us where the token exsits in the body
 		// Instead of this we couldve mapped the entire response to objects using a JSON library
@@ -84,6 +95,7 @@ public class SpringServiceImpl implements SpringService {
 		con.disconnect();
 		// Return the token to the method caller
 		return access_token;
+		*/
 	}
 
 	/*
@@ -91,7 +103,7 @@ public class SpringServiceImpl implements SpringService {
 	 * @param URL - the time series URL to query
 	 * @return - Strigified JSON object of the time series table's contents
 	 */
-	public String getData(String url) throws IOException {
+	public String getData(String url) throws IOException, JSONException {
 		// Create a URL object for the incoming time series URL
 		URL obj = new URL(url);
 		// Create a connection object for the URL
@@ -109,9 +121,29 @@ public class SpringServiceImpl implements SpringService {
 		// Create an OutputStreamWriter for our connect to post a message body
 		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 		// The message body to be posted
-		String message = "{\"start\": \"1y-ago\", \"tags\": [ { \"name\": \"Engine Speed\",\"order\": \"desc\", \"limit\": 100} ]}";
+		// OPTION 1: Use JSON Objects and Arrays to construct body
+		// JSONObject for the outer tags
+		JSONObject jsonBody = new JSONObject();
+		// JSONObject for the tags
+		JSONObject tags=new JSONObject();
+		JSONArray parent=new JSONArray();
+		// Name of table to query
+		tags.put("name", "Engine Speed");
+		// Order for sorted data
+		tags.put("order", "desc");
+		// Limit tag for limited data points
+		tags.put("limit", "2");
+		// Add the tags to an array (needed for query)
+		parent.put(tags);
+		// Add array to JSON Body
+		jsonBody.put("tags", parent);
+		// Add start date
+		jsonBody.put("start","1y-ago");
+
+		// OPTION 2: String query
+		//String message = "{\"start\": \"1y-ago\", \"tags\": [ { \"name\": \"Engine Speed\",\"order\": \"desc\", \"limit\": 100} ]}";
 		// Write the message to the output stream
-		wr.write(message);
+		wr.write(jsonBody.toString());
 		// Flush the buffer
 		wr.flush();
 	
@@ -146,7 +178,6 @@ public class SpringServiceImpl implements SpringService {
 		return sb.toString();
 	}
 
-		
 	
 
 }
