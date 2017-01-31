@@ -2,6 +2,7 @@ package com.johnathanmarksmith.mvc.web.modules;
 
 import java.io.IOException;
 
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ class SpringController
      * @return String The authentication token
      */
     @RequestMapping(value = "/getAuthToken", method = {RequestMethod.GET},produces = "text/html")
-    public @ResponseBody String getAuthToken() throws IOException
+    public @ResponseBody String getAuthToken() throws IOException, JSONException
     {
     	// Invoke the service to return the token
     	return springService.getAuthToken("https://98d4176d-a268-405b-a461-3f9944793a31.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token");
@@ -46,7 +47,7 @@ class SpringController
      * @return Data stored in timeseries table
      */
     @RequestMapping(value = "/getData", method = {RequestMethod.POST},produces = "text/html")
-    public @ResponseBody String getData() throws IOException
+    public @ResponseBody String getData() throws IOException, JSONException
     {
     	// Invoke the service to return the time series data
     	return springService.getData("https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io/v1/datapoints");
