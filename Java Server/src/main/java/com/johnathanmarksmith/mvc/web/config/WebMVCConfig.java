@@ -18,8 +18,6 @@ import java.util.Properties;
 
 /*
  * Config file for the Spring MVC
- * @author Kyle Duckworth (212326570)
- * @version 20.1.2017
  */
 @Configuration
 @EnableWebMvc
