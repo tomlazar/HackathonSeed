@@ -31,7 +31,6 @@
 
     <!-- Spring -->
     <dependencies>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -158,6 +157,11 @@
             <version>2.1.7</version>
         </dependency>
 
+<dependency>
+   <groupId>org.json</groupId>
+	<artifactId>json</artifactId>
+	<version>20140107</version>
+</dependency>
 
         <!-- JSR 303 validation -->
         <dependency>
@@ -188,6 +192,8 @@
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
+
+        
     </dependencies>
 
     <build>
@@ -198,6 +204,15 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.0</version>
             </plugin>
+            	<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>${java-version}</source>
+						<target>${java-version}</target>
+					</configuration>
+				</plugin>
         </plugins>
 
         <finalName>springmvc-helloworld</finalName>
