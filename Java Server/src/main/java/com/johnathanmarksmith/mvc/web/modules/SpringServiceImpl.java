@@ -37,7 +37,7 @@ public class SpringServiceImpl implements SpringService {
 		// Reset the token if method has been previously invoked
 		access_token = "";
 		// Add the UAA username as a parameter 'client_id'
-		url += "?client_id=tsWebApp&grant_type=client_credentials";
+		url += "?grant_type=client_credentials";
 		// Create a URL Object from the concatenated UAA URL
 		URL obj = new URL(url);
 		// Create the connection object for the URL
@@ -48,7 +48,7 @@ public class SpringServiceImpl implements SpringService {
 
 		//add request header
 		con.setRequestProperty("Accept", "application/json, application/x-www-form-urlencoded");
-		con.setRequestProperty("Authorization", "Basic dHNXZWJBcHA6cGFzc3dvcmQ=");
+		con.setRequestProperty("Authorization", "Basic YXBwX2NsaWVudF9pZDpzZWNyZXQ=");
 		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 							
 		// Make sure it was a success
@@ -96,7 +96,7 @@ public class SpringServiceImpl implements SpringService {
 		// Create a connection object for the URL
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		//add request headers
-		con.setRequestProperty("predix-zone-id", "f4939df9-fcf2-46af-90e2-dfce1a2a26bd");
+		con.setRequestProperty("predix-zone-id", "e3fba85e-d334-409e-87ce-3a17e71b4946");
 		con.setRequestProperty("Authorization", "Bearer " + this.getAccessToken());
 		con.setRequestProperty("Content-Type", "application/json");
 		// Set input and output to true to allow reading of response
@@ -108,7 +108,7 @@ public class SpringServiceImpl implements SpringService {
 		// Create an OutputStreamWriter for our connect to post a message body
 		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 		// The message body to be posted
-		String message = "{\"start\": \"1y-ago\", \"tags\": [ { \"name\": \"temperature\",\"order\": \"desc\", \"limit\": 100} ]}";
+		String message = "{\"start\": \"1y-ago\", \"tags\": [ { \"name\": \"Engine Speed\",\"order\": \"desc\", \"limit\": 100} ]}";
 		// Write the message to the output stream
 		wr.write(message);
 		// Flush the buffer
