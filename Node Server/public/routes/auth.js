@@ -26,13 +26,12 @@ exports.authenticate = function(req, res){
     // options for call to get token
     var options_token = {
         method: 'POST',
-        url: uaa_issuer_id,
+        url: uaa_issuer_id + '?grant_type=client_credentials',
         headers : {
                 'Accept': 'application/json, application/x-www-form-urlencoded',
                 'Authorization': 'Basic ' + base64_auth,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-        form : 'client_id='+client_id+'&grant_type=client_credentials'
     }
 
     //send request to get token

@@ -11,21 +11,16 @@ exports.getKpi = function(req, res){
     var timeseries_zone_id 		= 'e3fba85e-d334-409e-87ce-3a17e71b4946';
 	// JSON Body for request
     var json_data =
-    {
-		// Data points needs start and end time in MS
-		// Set the start time to 0 (Get all data)
-        "start": 0000000000000,
-		// Set the end time to the current tiem
-        "end": (new Date).getTime(), 
-		// Get the KPI name passed in the request
-        "tags": [
-            {
-                "name": req.params['kpiName'],
-                "order": "desc"
-            }
-        ]
+	{
+		"start": "1y-ago",
+		"tags": [
+			{
+				"name": req.params['kpiName'],
+				"order": "desc",
+				"limit": 2
+			}
+		]
 	};
-
     // options for db call
     var options = {
 		// Post request to get the data
@@ -47,11 +42,14 @@ exports.getKpi = function(req, res){
 		// If successfull request
         if (!error && response.statusCode == 200) {
             // Send the response back to the requester
+			console.log("Success!");
             res.send(response.body);
+			
 		}
 		// Not successful request
         else{
 			// Send erro back to the requester
+			console.log("Error!");
             res.send(error);
         }
     });
