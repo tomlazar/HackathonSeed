@@ -52,13 +52,13 @@ app.controller('mainController', function($scope, $http) {
 				token = data;   
 				$scope.token=token;
 				console.log(token);
-				loadKpiData('temperature', 'temperature', 'Temperature')
+				loadKpiData('Engine Speed');
 			})
         .error(function(data) {
             console.log('Error: ' + data);
     });
 
-    function loadKpiData(kpiName, containerName, chartName){
+    function loadKpiData(kpiName){
 		// if auth is null
 		 // alert
 		// Add the auth token as a parameter for a time-series request

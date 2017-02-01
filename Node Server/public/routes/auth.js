@@ -1,16 +1,22 @@
 var request 		= require('request');
-
+/*
+ * API route for UAA authentication token
+ * @author Kyle Duckworth (212326570)
+ * @version 01.02.2017
+ */
 exports.authenticate = function(req, res){
-    var uaa_issuer_id		= "https://df1e4f24-d699-4fef-a783-916e727ea2a5.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token"
+    // uaa url
+	var uaa_issuer_id		= "https://98d4176d-a268-405b-a461-3f9944793a31.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token"
 
-    //should probably make a predix client in uaa alongside the ts client, or else maybe the tokens get screwed up?
-    var client_password     = "password";
-    var client_id           = "tsWebApp";
+    //credentials for auth
+    var client_password     = "app_client_id";
+    var client_id           = "secret";
 
     // pretend this works
     //var base64_auth = Buffer.from(client_id+":"+client_password).toString('base64');
-
-    var base64_auth = 'dHNXZWJBcHA6cGFzc3dvcmQ=';
+	
+	// Base 64 encoded credentials - can get from Postman or any online tool
+    var base64_auth = 'YXBwX2NsaWVudF9pZDpzZWNyZXQ=';
 
     // parameters for call to get token
     var params_token = {
@@ -29,21 +35,22 @@ exports.authenticate = function(req, res){
         form : 'client_id='+client_id+'&grant_type=client_credentials'
     }
 
-    //note to figure out why this line is needed, something to do with the uaa server config i think
-    //http://stackoverflow.com/questions/19254029/angularjs-http-post-does-not-send-data
+    //send request to get token
     request(options_token, function (error, response, body) {
             if (!error && response.statusCode == 200) {
 
                 // if we successfully get the token, parse response body to json
                 // access token from json assigned to var for db call
                 var body = JSON.parse(response.body);
+				// Store in variable 
                 var access_token = body.access_token;
+				// Log in console
 				console.log('Auth in Auth worked');
+				// Return the token to the requestor
 				res.send(access_token);
-
-
             }
             else{
+				// Log the error getting the auth token
                 console.log(error);
                 console.log('error getting auth token')
             }
