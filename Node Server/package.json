@@ -1,16 +1,16 @@
 {
-  "name": "dtlp_pett",
+  "name": "GEHC Hackathon",
   "version": "1.0.0",
-  "description": "PETT Project Web Repo",
+  "description": "Hackathon NodeJS Template",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.build.ge.com/212462117/DTLP_PETT.git"
+    "url": "https://github.build.ge.com/212326570/GEHCHackathon/tree/master/Node%20Server"
   },
-  "author": "DTH_DTLPs",
+  "author": "212326570",
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
