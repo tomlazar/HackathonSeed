@@ -1,22 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>springmvc-helloworld</groupId>
-    <artifactId>springmvc-helloworld</artifactId>
+    <groupId>springmvc-predix</groupId>
+    <artifactId>springmvc-predix</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>springmvc-helloworld Maven Webapp</name>
+    <name>springmvc-predix Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
     <developers>
         <developer>
-            <id>jsmith</id>
-            <name>Johnathan Marm Smith</name>
-            <email>john@johnathanmarksmith.com</email>
+            <id>212326570</id>
+            <name>Kyle Duckworth</name>
+            <email>kyle.duckworth@ge.com</email>
             <roles>
-                <role>Architect</role>
+                <role>DTLP</role>
             </roles>
-            <timezone>-5</timezone>
         </developer>
     </developers>
 
@@ -215,7 +214,7 @@
 				</plugin>
         </plugins>
 
-        <finalName>springmvc-helloworld</finalName>
+        <finalName>springmvc-predix</finalName>
     </build>
 
 </project>
