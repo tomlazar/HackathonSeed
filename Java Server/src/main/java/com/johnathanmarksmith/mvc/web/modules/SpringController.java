@@ -20,6 +20,7 @@ import com.johnathanmarksmith.mvc.web.modules.SpringService;
  * @version 20.1.2017
  */
 @Controller
+@RequestMapping(value = "/springmvc-helloworld")
 class SpringController
 {
 	// Autowire the service object to execute logic
