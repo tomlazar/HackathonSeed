@@ -10,7 +10,12 @@ import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /*
  * Implementation of the serivce interface to create the connection to Predix
@@ -20,14 +25,14 @@ import org.springframework.stereotype.Service;
 @Service(value = "SpringService")
 public class SpringServiceImpl implements SpringService {
 	// variable to hold the access token
-	private String access_token = "";
+	private String accessToken = "";
 	/*
 	 * Get the access token for time series connection
 	 * @return the user authentication token
 	 */
 	private String getAccessToken(){
 		// Return the auth token
-		return access_token;
+		return accessToken;
 	}
 	
 	/*
@@ -37,65 +42,37 @@ public class SpringServiceImpl implements SpringService {
 	 */
 	public String getAuthToken(String url) throws IOException, JSONException {
 		// Reset the token if method has been previously invoked
-		access_token = "";
-		// Add the UAA username as a parameter 'client_id'
-		url += "?grant_type=client_credentials";
-		// Create a URL Object from the concatenated UAA URL
-		URL obj = new URL(url);
-		// Create the connection object for the URL
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-							
-		// POST command to UAA to get the token
-		con.setRequestMethod("POST");
+		accessToken = "";
 
-		//add request header
-		con.setRequestProperty("Accept", "application/json, application/x-www-form-urlencoded");
-		con.setRequestProperty("Authorization", "Basic YXBwX2NsaWVudF9pZDpzZWNyZXQ=");
-		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-							
-		// Make sure it was a success
-		int responseCode = con.getResponseCode();
-				
-		// Create a buffered reader to read the http response body
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		// Variable will be used to parse response
-		String inputLine;
+		// Specify we are using client credentials 
+		url += "?grant_type=client_credentials";
+		// Step 2: Send request to AWS proxy
+		// Instantiate a URL object to make the POST request
+
+		// Instantiate the rest template
+		RestTemplate restTemplate = new RestTemplate();
+		
+		// Instantiate the headers object to house the request headers
+		HttpHeaders headers = new HttpHeaders();
+		
+		// Add the request headers
+		headers.set("Authorization", "Basic YXBwX2NsaWVudF9pZDpzZWNyZXQ=");
+		headers.set("Accept", "application/json, application/x-www-form-urlencoded");
+		headers.set("Content-Type", "application/x-www-form-urlencoded");
+		
+		// Create the HTTP entity
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+		
 		// OPTION 1: Use JSON Object to read response body
-		JSONObject test = new JSONObject(in.readLine());
-		access_token = test.getString("access_token");
-		// Close the buffered reader
-		in.close();
-		// Close the connection object
-		con.disconnect();
+		JSONObject test = new JSONObject(response.getBody());
+		accessToken = test.getString("access_token");
+
 		// Return the token to the method caller
-		return access_token;
-		/*
-		// OPTION 2: Loop through entire body and parse string
-		// We're going to look for the phrase "access_token":"
-		// This will tell us where the token exsits in the body
-		// Instead of this we couldve mapped the entire response to objects using a JSON library
-		String searchPhrase = "\"access_token\":\"";
-				
-		// Read until end of file is reached
-		while ((inputLine = in.readLine()) != null) {
-			// Loop through response starting after the phrase "access_token":"
-			for(int i = inputLine.indexOf(searchPhrase)+searchPhrase.length(); i < inputLine.length(); i++){
-				// Once we reach another quote, we know the token has been read
-				if(inputLine.substring(i,i+1).equals("\"")){
-					// Break the loop
-					break;
-				}
-				// Add characters to the token one by one as we loop through them
-				access_token += inputLine.substring(i,i+1);
-			}
-		}
-		// Close the buffered reader
-		in.close();
-		// Close the connection object
-		con.disconnect();
-		// Return the token to the method caller
-		return access_token;
-		*/
+		return accessToken;
+		
+
 	}
 
 	/*
@@ -104,24 +81,18 @@ public class SpringServiceImpl implements SpringService {
 	 * @return - Strigified JSON object of the time series table's contents
 	 */
 	public String getData(String url) throws IOException, JSONException {
-		// Create a URL object for the incoming time series URL
-		URL obj = new URL(url);
-		// Create a connection object for the URL
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		//add request headers
-		con.setRequestProperty("predix-zone-id", "e3fba85e-d334-409e-87ce-3a17e71b4946");
-		con.setRequestProperty("Authorization", "Bearer " + this.getAccessToken());
-		con.setRequestProperty("Content-Type", "application/json");
-		// Set input and output to true to allow reading of response
-		con.setDoOutput(true);
-		con.setDoInput(true);
-		// POST command to UAA to get the time series data
-		con.setRequestMethod("POST");
+
+		// Instantiate the rest template
+		RestTemplate restTemplate = new RestTemplate();
+				
+		// Instantiate the headers object to house the request headers
+		HttpHeaders headers = new HttpHeaders();
 		
-		// Create an OutputStreamWriter for our connect to post a message body
-		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
-		// The message body to be posted
-		// OPTION 1: Use JSON Objects and Arrays to construct body
+		//add request headers
+		headers.set("predix-zone-id", "e3fba85e-d334-409e-87ce-3a17e71b4946");
+		headers.set("Authorization", "Bearer " + this.getAccessToken());
+		headers.set("Content-Type", "application/json");
+
 		// JSONObject for the outer tags
 		JSONObject jsonBody = new JSONObject();
 		// JSONObject for the tags
@@ -139,43 +110,15 @@ public class SpringServiceImpl implements SpringService {
 		jsonBody.put("tags", parent);
 		// Add start date
 		jsonBody.put("start","1y-ago");
+				
+		// Create the HTTP entity
+		HttpEntity<String> entity = new HttpEntity<String>(jsonBody.toString(), headers);
 
-		// OPTION 2: String query
-		//String message = "{\"start\": \"1y-ago\", \"tags\": [ { \"name\": \"Engine Speed\",\"order\": \"desc\", \"limit\": 100} ]}";
-		// Write the message to the output stream
-		wr.write(jsonBody.toString());
-		// Flush the buffer
-		wr.flush();
+		// Send the post request and record the response
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 	
-		// Create a string builder object to parse the response
-		StringBuilder sb = new StringBuilder();  
-		// Get the connection response
-		int HttpResult = con.getResponseCode(); 
-		// Check for a 200 response (success)
-		if (HttpResult == HttpURLConnection.HTTP_OK) {
-			// Read the response
-		    BufferedReader br = new BufferedReader(
-		            new InputStreamReader(con.getInputStream(), "utf-8"));
-		    String line = null;  
-		    // Loop through entire repsonse
-		    while ((line = br.readLine()) != null) {  
-		    	// Append the string builder object with the response
-		        sb.append(line + "\n");  
-		    }
-		    // Close the buffered reader
-		    br.close();
-		    // Display contents for debuggins
-		    System.out.println("" + sb.toString());  
-		} else {
-			// Display error message for debugging
-		    System.out.println("HttpResult: " + HttpResult + " " + con.getResponseMessage());  
-		}  
-		// Close the output writer
-		wr.close();
-		// Close the connection object
-		con.disconnect();
-		// Return the strigified JSON Object
-		return sb.toString();
+		// Return the response body to the controller
+		return response.getBody();
 	}
 
 	

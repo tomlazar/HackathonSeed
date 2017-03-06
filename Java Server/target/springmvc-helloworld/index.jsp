@@ -10,7 +10,7 @@
 	    <script src="sample.js"></script>
 	</head>
 
-  <title>GEHC Hackathon</title>
+  <title>GEHC Hackathon #1</title>
 </head>
 
 <nav class="navbar navbar-default">
@@ -45,4 +45,3 @@
 
 </body>
 </html>
-
