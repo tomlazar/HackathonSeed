@@ -13,14 +13,14 @@ app.controller('mainController', function($scope, $http) {
      */
     function getDataFromPredix(){
     	// Get the UAA authentication token
-    	$http.get('/getAuthToken/')
+    	$http.get('/springmvc-helloworld/getAuthToken/')
     	
     	// If the request was successful
     	.success(function(authToken) {	
     		// Log auth token in console
     		console.log(authToken);
     		// Get data from predix using the token
-    		$http.post('/getData/')
+    		$http.post('/springmvc-helloworld/getData/')
         	
         	// If the request was successful
         	.success(function(data) {			
