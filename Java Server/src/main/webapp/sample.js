@@ -12,6 +12,7 @@ app.controller('mainController', function($scope, $http) {
      * Get data from Predix - send the http request that will be mapped in our controller
      */
     function getDataFromPredix(){
+    	// test
     	// Get the UAA authentication token
     	$http.get('/springmvc-helloworld/getAuthToken/')
     	
