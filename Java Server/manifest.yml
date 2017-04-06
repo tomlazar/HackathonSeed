@@ -1,5 +1,5 @@
 applications:
-  - name: test-language-metadata
+  - name: springmvc-helloworld
     buildpack: https://github.com/cloudfoundry/java-buildpack.git
-    path: target/Language-Metadata-Service-0.0.1-SNAPSHOT.jar
+    path: target/springmvc-helloworld.war
     memory: 1GB
