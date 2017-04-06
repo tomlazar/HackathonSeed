@@ -1,4 +1,4 @@
 applications:
-- name: nodeapp
+- name: nodeappHackathon
   command: node server.js
   memory: 512MB
