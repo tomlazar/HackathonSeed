@@ -20,6 +20,7 @@ import com.ge.mvc.web.modules.SpringService;
  * @version 20.1.2017
  */
 @Controller
+// Needed for local testing
 //@RequestMapping(value = "/springmvc-helloworld")
 class SpringController
 {
