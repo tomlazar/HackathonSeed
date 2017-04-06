@@ -2,4 +2,4 @@ applications:
   - name: springmvc-helloworld
     buildpack: https://github.com/cloudfoundry/java-buildpack.git
     path: target/springmvc-helloworld.war
-    memory: 1GB
+    memory: 512MB
