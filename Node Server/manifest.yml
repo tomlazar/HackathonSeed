@@ -1,0 +1,4 @@
+applications:
+- name: nodeapp
+  command: node server.js
+  memory: 512MB
