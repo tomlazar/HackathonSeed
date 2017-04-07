@@ -26,7 +26,7 @@ app.config(function ($routeProvider) {
             controller: 'mainController'
         })
 
-        .when('/two', {
+        .when('/scatter', {
             templateUrl: '/templates/ScatterPlot.html',
             controller: 'mainController'
         });

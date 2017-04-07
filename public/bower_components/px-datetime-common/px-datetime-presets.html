@@ -1,0 +1,90 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-datetime-imports.html" />
+
+<!--
+The list of preset ranges in the rangepicker modal.
+
+##### Usage
+
+    <px-datetime-presets preset-ranges="{{...}}">
+    </px-datetime-presets>
+-->
+
+<link rel="import" href="css/px-datetime-presets-styles.html">
+
+<dom-module id="px-datetime-presets">
+  <template>
+    <style include="px-datetime-presets-styles"></style>
+
+    <h4 class="caps u-mt0 u-mb-">Presets</h4>
+    <ul class="list-bare">
+      <template is="dom-repeat" items="{{presetRanges}}" as="preset">
+        <li class="u-mb-">
+          <span class$="{{_getButtonClass(selectedItem, preset)}}" on-tap="_usePreset">{{preset.displayText}}</span>
+        </li>
+      </template>
+    </ul>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'px-datetime-presets',
+
+    properties: {
+
+      /**
+       * (optional)
+       *
+       * The preset date/time ranges to be displayed.  If not set, will have no presets displayed.
+       *
+       *```
+       *   [
+       *    {
+       *      "displayText": "Last 5 Minutes",
+       *      "startDateTime": "2013-02-04T22:44:30.652Z",
+       *      "endDateTime": "2013-02-04T22:49:30.652Z"
+       *    },
+       *    {
+       *      "displayText": "Last 12 Hours",
+       *      "startDateTime": "2013-02-04T10:44:30.652Z",
+       *      "endDateTime": "2013-02-04T22:49:30.652Z"
+       *    }
+       *   ]
+       * ```
+       *
+       * @default no presets
+       */
+      presetRanges: {
+        type: Object,
+        value: function(){
+          return [];
+        }
+      },
+      selectedItem: {
+        type: Object,
+        value: function(){
+          return {};
+        }
+      }
+    },
+
+    _usePreset: function(e) {
+      this.set('selectedItem', e.model.preset);
+      this.fire('px-preset-selected', e.model.preset);
+    },
+
+    _getButtonClass: function(selectedItem, presetObject){
+      var classlist = ['actionable'];
+
+      if(selectedItem === presetObject){
+        classlist.push('actionable--select');
+      }else {
+        classlist.push('actionable--action');
+      }
+      return classlist.join(' ');
+    }
+
+  });
+</script>

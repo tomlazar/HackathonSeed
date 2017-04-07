@@ -1,0 +1,262 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-vis-behavior-common.html"/>
+<link rel="import" href="px-vis-behavior-register.html"/>
+<link rel="import" href="px-vis-dynamic-menu.html"/>
+<link rel="import" href="../px-number-formatter/px-number-formatter.html" />
+
+<!--
+Element providing a series line items on the register for regular charts
+
+##### Usage
+
+    <px-vis-register-item
+        item="[[item]]"
+        complete-series-config="[[completeSeriesConfig]]"
+        type="[[type]]"
+        x-axis-type="[[xAxisType]]"
+        y-axis-type="[[yAxisType]]">
+    </px-vis-register-item>
+
+### Styling
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+  `--px-vis-register-series-name` | The color of the data series name | `$gray5`
+  `--px-vis-register-data-value` | The color of the data series value | `$black`
+  `--px-vis-register-box` | The color of the box around the register when a scrollbar is present | `$gray3`
+  |  |
+  |  |
+  |  |
+  `--px-tooltip-background-color` | The color of the tooltip | `$black`;
+  `--px-tooltip-text-color` | The color of the tooltip text | `$white`;
+  `--px-tooltip-light-background-color` | The color of the light version tooltip | `$white`;
+  `--px-tooltip-light-text-color` | The color of the light version tooltip text | `$black`;
+  `--px-tooltip-light-border-color`| The color of the light version tooltip border |  `$black`;
+  |  |
+  |  |
+  |  |
+  `--px-font-family` | The font family for all labels and text | `GE Inspira Sans`
+
+@element px-vis-register-item
+@blurb Element providing a series line items on the register for regular charts
+@homepage index.html
+@demo demo.html
+-->
+
+<link rel="import" href="css/px-vis-register-styles.html">
+
+<dom-module id="px-vis-register-item">
+
+  <template>
+    <style include="px-vis-register-styles"></style>
+    <style>
+      :host {
+        /*  Fix for Safari flex bug:
+            https://philipwalton.com/articles/normalizing-cross-browser-flexbox-bugs/
+            Demo of bug: http://jsbin.com/xetinivozo/1/edit?html,js,output
+        */
+        flex-shrink: 0;
+      }
+    </style>
+    <span
+      class$="[[_baseClasses]] register-item--min-width"
+      name$="R{{item.name}}"
+      id="regItem">
+      <span
+        class$="flex [[_itemMutedToStart]]"
+        on-tap="_seriesClicked"
+        id="regWithoutMenu">
+        <span
+          class="seriesMarker"
+          style$="background-color:[[_itemColor]]"
+          name$="R{{item.name}}">&nbsp;</span>
+        <span class$="[[_wrapperClass]]">
+          <div
+            class="seriesName flex__item--msfix"
+            name$="R{{item.name}}">
+            {{_truncatedName}}&nbsp;
+            <template is="dom-if" if="[[_didTruncate]]">
+              <px-tooltip delay="500">[[_configName]]</px-tooltip>
+            </template>
+          </div>
+          <!-- Display serie data differently depending on x and y axis types -->
+          <div class="seriesData flex__item--msfix" name$="R{{item.name}}">
+            <!-- if x axis is number format and show it -->
+            <template is="dom-if" if="{{_isOfType(xAxisType, 'linear')}}">
+              <template is="dom-if" if="{{_checkItem(_itemX)}}">
+                <px-number-formatter
+                  class$="[[_ttStyle]]"
+                  value="[[_itemX]]"
+                  format="[[numberFormat]]"
+                  culture="[[numberFormatCulture]]"
+                  currency$="[[numberFormatIsCurrency]]"
+                  default-currency-format="[[numberFormatCurrency]]"
+                  zero-format="[[numberFormatZero]]">
+                </px-number-formatter>
+                <template is="dom-if" if="[[_checkItem(_itemX)]]">
+                  {{_xUnit}}
+                </template>
+                <template is="dom-if" if="[[_checkItem(_itemX)]]">
+                  &nbsp;/&nbsp
+                </template>
+              </template>
+            </template>
+            <!-- if x axis is ordinal just display it -->
+            <template is="dom-if" if="{{_isOfType(xAxisType, 'ordinal')}}">
+              <span>[[_itemX]]</span>
+              <template is="dom-if" if="[[_checkItem(_itemX)]]">
+                {{_xUnit}}
+              </template>
+              <template is="dom-if" if="[[_checkItem(_itemX)]]">
+                &nbsp;/&nbsp
+              </template>
+            </template>
+            <!-- if x axis is time don't display it -->
+            <!-- if y axis is number format and show it -->
+              <template is="dom-if" if="{{_isOfType(yAxisType, 'linear')}}">
+                <template is="dom-if" if="{{_checkItem(_itemY)}}">
+                  <px-number-formatter
+                    class$="[[_ttStyle]]"
+                    value="[[_itemY]]"
+                    format="[[numberFormat]]"
+                    culture="[[numberFormatCulture]]"
+                    currency$="[[numberFormatIsCurrency]]"
+                    default-currency-format="[[numberFormatCurrency]]"
+                    zero-format="[[numberFormatZero]]">
+                  </px-number-formatter>
+                </template>
+              </template>
+              <!-- if y axis is ordinal just display it -->
+              <template is="dom-if" if="{{_isOfType(yAxisType, 'ordinal')}}">
+                <span>[[_itemY]]</span>
+              </template>
+              <template is="dom-if" if="[[_checkItem(_itemY)]]">
+                {{_yUnit}}
+              </template>
+            </div>
+          </span>
+        </span>
+        <template id="menuTemplate" is="dom-if" if="[[_hasDynamicMenu]]">
+          <px-vis-dynamic-menu
+              id="menu"
+              class$="[[_getDynamicMenuClass(type)]]"
+              style="display: none"
+              additional-detail="[[item]]"
+              dynamic-menu-config="[[dynamicMenuConfig]]">
+          </px-vis-dynamic-menu>
+        </template>
+      </span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'px-vis-register-item',
+
+    behaviors: [
+      PxVisBehavior.formatting,
+      PxVisBehavior.completeSeriesConfig,
+      PxVisBehavior.truncating,
+      PxVisBehavior.mutedSeries,
+      PxVisBehavior.axisTypes,
+      PxVisBehaviorRegister.register,
+      PxVisBehaviorRegister.itemShared,
+      PxVisBehaviorRegister.generalItem,
+      PxVisBehaviorRegister.disableClick
+    ],
+    properties: {
+      /**
+       * the units for the x value
+       */
+      _xUnit: {
+        type: String,
+        computed: '_computeXUnit(item, completeSeriesConfig.*)'
+      },
+      /**
+       * the units for the y value
+       */
+      _yUnit: {
+        type: String,
+        computed: '_computeYUnit(item, completeSeriesConfig.*)'
+      },
+      /**
+       * calcs the value for x
+       */
+      _itemX: {
+        type: Number,
+        computed: '_computeItemX(item, completeSeriesConfig.*)'
+      },
+      /**
+       * calcs the value of y
+       */
+      _itemY: {
+        type: Number,
+        computed: '_computeItemY(item, completeSeriesConfig.*)'
+      },
+      /**
+      * 'light' or 'dark'. Used to style the px-number-formatter to match the register styling
+      */
+      _ttStyle: {
+        type: String
+      }
+    },
+
+    observers: [
+      '_toggleSeries(item,mutedSeries.*)',
+      '_disableClickFunc(disableClick)'
+    ],
+
+    /**
+     * returns the unit for the x value based on the seriesConfig
+     */
+    _computeXUnit : function(item, completeSeriesConfig) {
+      return this.completeSeriesConfig[item.name] && this.completeSeriesConfig[item.name]['xAxisUnit'] ? this.completeSeriesConfig[item.name]['xAxisUnit'] : '';
+    },
+    /**
+     * returns the unit for the y value based on the seriesConfig
+     */
+    _computeYUnit : function(item, completeSeriesConfig) {
+      return this.completeSeriesConfig[item.name] && this.completeSeriesConfig[item.name]['yAxisUnit'] ? this.completeSeriesConfig[item.name]['yAxisUnit'] : '';
+    },
+
+    /**
+     * returns the value for y
+     */
+    _computeItemY: function() {
+      return this._returnVal(this.item, 'y');
+    },
+    /**
+     * returns the value for x
+     */
+    _computeItemX: function() {
+      return this._returnVal(this.item, 'x');
+    },
+
+    /**
+     * returns the value in the tooltip data
+     */
+    _returnVal: function(item, axis) {
+      if(this.completeSeriesConfig[item.name]) {
+        var key = (axis === 'x') ? this.completeSeriesConfig[item.name]['x'] : this.completeSeriesConfig[item.name]['y'];
+        if(item.value && (item.value[key] || item.value[key] === 0)) {
+          return item.value[key]
+        }
+      }
+      return null;
+    },
+
+    _checkItem: function(val) {
+      if(val || val === 0) {
+        return true;
+      }
+      return false;
+    },
+
+    _disableClickFunc: function(disableClick) {
+      if(disableClick) {
+        this.unlisten(this.$.regWithoutMenu, "tap", '_seriesClicked');
+      }
+    }
+  });
+</script>

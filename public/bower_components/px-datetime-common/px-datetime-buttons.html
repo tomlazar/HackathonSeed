@@ -1,0 +1,133 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-datetime-behavior.html"/>
+<link rel="import" href="validate.html"/>
+<link rel="import" href="px-datetime-imports.html" />
+
+
+<!--
+Date time button component.
+
+##### Usage
+
+    <px-datetime-button>
+    </px-rangepicker-modal>
+-->
+
+<link rel="import" href="css/px-datetime-buttons-styles.html">
+
+<dom-module id="px-datetime-buttons">
+  <template>
+    <style include="px-datetime-buttons-styles"></style>
+
+    <template is="dom-if" if="{{ !hideCancel }}">
+      <button type="button" class="btn u-mr--" on-tap="_fireCancelEvent">Cancel</button>
+    </template>
+    <template is="dom-if" if="{{ !hideSubmit }}">
+      <button class$="{{submitBtnClasses('btn btn--primary', isSubmitButtonValid)}}"
+              type="button"
+              on-tap="_fireSubmitEvent"
+              id="submitButton"
+              disabled="{{!isSubmitButtonValid}}">
+      <i class$="{{submitIcon}}"></i>{{submitText}}</button>
+    </template>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+
+    is: 'px-datetime-buttons',
+
+    behaviors: [
+      validate
+    ],
+
+    properties: {
+      /**
+       * Whether the Submit button should be valid
+       */
+      isSubmitButtonValid: {
+        type: Boolean,
+        value: true
+      },
+      /**
+       *
+       * Hides the Submit button when true
+       *
+       * @default false
+       */
+      hideSubmit:{
+        type:Boolean,
+        value: false
+      },
+       /**
+        *
+        * Hides the Cancel button when 'hide'
+        *
+        * @default 'show'
+        */
+      hideCancel:{
+        type:Boolean,
+        value: false
+      },
+      /**
+       * Icon to be used for the Submit button
+       *
+       */
+      submitIcon: {
+        type: String
+      },
+      /**
+       *  Text to be used for the Submit button
+       *
+       */
+      submitText: {
+        type: String,
+        value: 'Apply'
+      }
+
+    },
+    observers: [
+      '_submitButtonState(isSubmitButtonValid)'
+    ],
+    /**
+     * Sets up listeners for a variety of events fired from or passing through this component
+     *
+     */
+    ready: function() {
+      // listens for a button click, enter key, or esp key
+      // document.addEventListener('px-datetime-submit', '_dateTimeButtons');
+    },
+    /**
+     *
+     *
+     */
+    _fireCancelEvent:function(){
+      this.fire('px-datetime-button-clicked',{ action:false });
+      // this._processButtons(false);
+    },
+    /**
+     *
+     *
+     */
+    _fireSubmitEvent:function(){
+      this.fire('px-datetime-button-clicked',{ action:true });
+      // this._processButtons(true);
+    },
+    /**
+     *
+     *
+     */
+    submitBtnClasses: function(base, submitButtonValid) {
+      return (submitButtonValid) ? base : base + ' btn--disabled';
+    },
+    /**
+     *
+     *
+     */
+    _isEqual: function(source, target) {
+      console.log(source);
+      console.log(target);
+      return source === target;
+    }
+  });
+</script>

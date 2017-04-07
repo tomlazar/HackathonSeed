@@ -1,0 +1,468 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="validate.html" />
+<link rel="import" href="px-datetime-imports.html" />
+<link rel="import" href="px-datetime-behavior.html" />
+<link rel="import" href="px-datetime-entry-cell.html" />
+<link rel="import" href="../px-polymer-font-awesome/polymer-font-awesome.html" />
+<link rel="import" href="../px-dropdown/px-dropdown.html" />
+
+
+<!--
+Range field component which displays a time or date and font awesome icon.
+
+##### Usage
+
+    <px-datetime-entry
+      moment="{{...}}"??
+      date-or-time="Date"
+      moment-format="MM/DD/YYYY">
+    </px-datetime-entry>
+
+@demo demo.html
+-->
+
+<link rel="import" href="css/px-datetime-entry-styles.html">
+
+<dom-module id="px-datetime-entry">
+  <template>
+    <style include="px-datetime-entry-styles"></style>
+
+    <div id='wrapper' class="inline--flex">
+      <div class="inline--flex">
+          <label class="label--inline dt-label-icon" on-tap="_iconClicked">
+              <span class="a11y dtLabel">{{dateOrTime}}</span>
+              <template is="dom-if" if={{!hideIcon}}>
+                <iron-icon
+                  id="icon"
+                  class="fa fa-fw dtIcon"
+                  icon="[[_setIcon(dateOrTime)]]">
+                </iron-icon>
+              </template>
+          </label>
+          <template is="dom-repeat" items="{{_cellFormatArray}}">
+            <px-datetime-entry-cell
+              id="cell{{index}}"
+              class="cell "
+              order='{{index}}'
+              moment-obj="[[momentObj]]"
+              moment-format='[[item]]'
+              symbol=[[_returnSymbol(index,_symbolCharArray)]]
+              is-valid$={{isValid}}
+              time-zone="[[timeZone]]"
+              is-selected={{isSelected}}>
+            </px-datetime-entry-cell>
+            <template is="dom-if" if={{_isSymbol(index,_symbolCharArray)}}>
+              <div
+                class="dtEntrySymbol"
+                symbol='{{_returnSymbol(index,_symbolCharArray)}}'>{{_returnSymbol(index,_symbolCharArray)}}
+              </div>
+            </template>
+          </template>
+      </div>
+      <div class$="{{_getTimeZoneTextClass(showTimeZone, isValid)}}">
+        <template is="dom-if" if="{{_showTimeZoneDropdown(showTimeZone)}}">
+          <px-dropdown id="dropdown" display-value="[[timeZone]]" value="{{timeZone}}">
+            <px-dropdown-content
+              extend-dropdown="true"
+              extend-dropdown-by="50"
+              max-content-character-width="50"
+              items="[[_getTimeZoneList(showTimeZone)]]">
+            </px-dropdown-content>
+          </px-dropdown>
+        </template>
+        <template is="dom-if" if="{{_showTimeZoneText(showTimeZone)}}">
+          <span id="timeZoneText" class="text-input--non-editable">{{_getTimeZoneText(timeZone, showTimeZone, momentObj)}}</span>
+        </template>
+      </div>
+      <template is="dom-if" if="{{!isValid}}">
+        <div class="fa fa-fw validation-container flex flex--middle">
+          <iron-icon class$="{{_getValidationIconClass(isValid)}}"
+            icon="fa:fa-exclamation-circle">
+          </iron-icon>
+          <template is="dom-if" if="{{!isValid}}">
+            <px-tooltip
+              class="tooltip-font"
+              smart-orientation
+              orientation="top"
+              tooltip-message="{{validationErrorMessage}}">
+            </px-tooltip>
+          </template>
+        </div>
+      </template>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'px-datetime-entry',
+
+    behaviors: [
+      pxDatetimeBehavior,
+      validate
+    ],
+
+    properties: {
+      /**
+       * Date or Time icon/text
+       *
+       * Format is 'Date' or 'Time'
+       *
+       * @property dateOrTime
+       * @type string
+       * @default none
+       */
+      dateOrTime: {
+        type: String,
+        value: 'Date'
+      },
+      /**
+       *
+       * Moment format string for the format to display/validate this field against
+       * (see http://momentjs.com/docs/#/parsing/string-format/)
+       */
+      momentFormat: {
+        type: String,
+        value: 'YYYY/MM/DD',
+        observer: '_formatChanged'
+      },
+      /**
+       * Whether to hide the calendar or clock icon
+       *
+       */
+      hideIcon: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       *
+       *
+       *
+       */
+      _editTimeout:{
+        type:Object,
+        value: function(){ return {} }
+      },
+      /**
+       *
+       *
+       *
+       */
+      _cellFormatArray:{
+        type: Array,
+        notify: true
+      },
+      /**
+       *
+       *
+       *
+       */
+      _symbolCharArray:{
+        type: Array,
+        notify: true,
+        value: function(){
+          return []
+        }
+      },
+      /**
+       *
+       * Determines how to display the timezone:
+       * - 'dropdown': shows the timezone as a dropdown which the user can use to
+       * select a different timezone. Only contains a subset of all timezones
+       * - 'extendedDropdown': shows the timezone as a dropdown which the user can use to
+       * select a different timezone. Contains all existing timezones (588)
+       * - 'text': shows the timezone as text, non editable
+       * - 'abbreviatedText': shows the timezone as an abbreviated text, non editable (e.g. UTC, PST, EST, etc)
+       */
+      showTimeZone: {
+        type: String,
+        value: ''
+      },
+      /**
+       *  True if any cell is currently selected.
+       *
+       */
+      isSelected: {
+        type: Boolean,
+        notify: true
+      }
+    },
+
+    listeners: {
+      'px-entry-cell-move': '_entryCellMove',
+      'px-cell-blured': '_handleBlur',
+      'px-cell-validate': '_validateInput',
+      'px-moment-changed': '_handleMoment',
+      'px-request-datetime-entry-copy': '_handleCopy',
+      'px-request-datetime-entry-paste': '_handlePaste'
+    },
+    /**
+     *
+     *
+     *
+     */
+    ready: function(){
+      this._splitFormat();
+      this._sizeSymbols();
+    },
+    /**
+     *
+     *
+     *
+     */
+    _formatChanged: function() {
+      this._splitFormat();
+      this._sizeSymbols();
+    },
+    /**
+     *
+     *
+     *
+     */
+    _sizeSymbols: function() {
+      //create a dummy canvas to measure string and make size the input correctly
+      var style = window.getComputedStyle(this, null),
+          fontSize = style.getPropertyValue('font-size'),
+          fontFamily = style.getPropertyValue('font-family'),
+          c = document.createElement('canvas'),
+          ctx=c.getContext('2d'),
+          symbols = Polymer.dom(this.root).querySelectorAll('.dtEntrySymbol'),
+          length;
+
+      ctx.font = fontSize + " " + fontFamily;
+
+      symbols.forEach(function(symbol, index) {
+        length = ctx.measureText(symbol.innerHTML.trim().replace('&nbsp', ' ')).width;
+        symbol.style['width'] = length + 'px';
+      });
+    },
+    /**
+     *
+     *
+     *
+     */
+    _splitFormat:function(){
+      var re = /[MDYAaHhkmsSZXx]+/g;
+      var reSymbol = /\W+/g;
+
+      this._cellFormatArray = this.momentFormat.match(re);
+      this._symbolCharArray = this.momentFormat.match(reSymbol);
+
+      this.notifyPath('_cellFormatArray',this._cellFormatArray);
+      this.notifyPath('_symbolCharArray',this._symbolCharArray);
+    },
+    /**
+     *
+     *
+     *
+     */
+    _isSymbol: function(i){
+      if(this._symbolCharArray === null || typeof(this._symbolCharArray[i]) === 'undefined'){
+        return false
+      }
+      return true
+    },
+    /**
+     *
+     *
+     *
+     */
+    _returnSymbol: function(i){
+      if(this._symbolCharArray === null || typeof(this._symbolCharArray[i]) === 'undefined'){
+        return ''
+      }
+      return this._symbolCharArray[i].split(' ').join('\xa0');
+    },
+    /**
+     *
+     *
+     *
+     */
+    _setIcon: function(){
+      if (this.dateOrTime.toLowerCase() === 'date') {
+        return 'fa:fa-calendar'
+      } else {
+        return 'fa:fa-clock-o'
+      }
+    },
+    /**
+     *
+     *
+     *
+     */
+    _entryCellMove: function(evt){
+      var ne = Polymer.dom(evt);
+      var entryCellOrder = ne.rootTarget.order;
+
+      if(entryCellOrder === this._cellFormatArray.length - 1 && evt.detail.dir === 1){
+
+        this.fire('px-next-field', {dateOrTime: this.dateOrTime});
+      } else if(entryCellOrder === 0 && evt.detail.dir === -1){
+
+        this.fire('px-previous-field', {dateOrTime: this.dateOrTime});
+      } else {
+        this._focusCell(parseInt(entryCellOrder) + evt.detail.dir);
+      }
+    },
+    _focusCell: function(cellNumber) {
+      var elem = this.$$("#cell" + cellNumber);
+      elem.$.dtEntry.focus();
+    },
+    _focusLastCell: function() {
+      this._focusCell(this._cellFormatArray.length - 1);
+    },
+    /**
+     *
+     */
+    _handleBlur: function(){
+      this._validateInput();
+    },
+    /**
+     *
+     */
+    _handleMoment: function(evt){
+      this.set('momentObj',evt.detail.momentObj);
+    },
+    /**
+     *
+     */
+    _showTimeZoneText: function(showTimeZone) {
+      return showTimeZone === "text" || showTimeZone === "abbreviatedText";
+    },
+    /**
+     *
+     */
+    _showTimeZoneDropdown: function(showTimeZone) {
+      return showTimeZone === "dropdown" || showTimeZone === "extendedDropdown";
+    },
+    /**
+     *
+     */
+    _getTimeZoneList: function(showTimeZone) {
+      if(showTimeZone === "extendedDropdown") {
+        return Px.moment.tz.names();
+      } else if (showTimeZone === "dropdown"){
+        return [
+          "Etc/GMT",
+          "Etc/GMT+0",
+          "Etc/GMT+1",
+          "Etc/GMT+10",
+          "Etc/GMT+11",
+          "Etc/GMT+12",
+          "Etc/GMT+2",
+          "Etc/GMT+3",
+          "Etc/GMT+4",
+          "Etc/GMT+5",
+          "Etc/GMT+6",
+          "Etc/GMT+7",
+          "Etc/GMT+8",
+          "Etc/GMT+9",
+          "Etc/GMT-0",
+          "Etc/GMT-1",
+          "Etc/GMT-10",
+          "Etc/GMT-11",
+          "Etc/GMT-12",
+          "Etc/GMT-13",
+          "Etc/GMT-14",
+          "Etc/GMT-2",
+          "Etc/GMT-3",
+          "Etc/GMT-4",
+          "Etc/GMT-5",
+          "Etc/GMT-6",
+          "Etc/GMT-7",
+          "Etc/GMT-8",
+          "Etc/GMT-9",
+          "Etc/GMT0",
+          "UCT",
+          "UTC",
+        ];
+      }
+    },
+    /**
+     *
+     *
+     *
+     */
+    _handleCopy: function(e) {
+      e.detail.setData('Text', Px.moment.tz(this.momentObj, this.timeZone).format(this.momentFormat));
+      e.stopPropagation();
+    },
+    /**
+     *
+     *
+     *
+     */
+    _handlePaste: function(e) {
+      //try parsing what's been pasted...
+      var data = e.detail.getData('Text'),
+          newDate = Px.moment(data, this.momentFormat);
+      if(newDate.isValid()) {
+
+        //if this comes from another datetime-entry make sure it is the same type
+        //otherwise just allow. This is to avoid changing the date when parsing a time
+        /*if(!dateOrTime || (dateOrTime === this.dateOrTime)) {
+
+        }*/
+        this.momentObj = newDate;
+      }else {
+        console.log("tried to paste non valid date format: " + data + ". Expecting: " + this.momentFormat);
+      }
+
+      e.stopPropagation();
+    },
+    /**
+     *
+     *
+     *
+     */
+    _getTimeZoneText: function(timeZone, showTimeZone, momentObj) {
+      if(showTimeZone === "abbreviatedText") {
+        return Px.moment.tz.zone(timeZone).abbr(momentObj);
+      } else if (showTimeZone === "text"){
+        return timeZone;
+      }
+    },
+    _getTimeZoneTextClass: function (showTimeZone, isValid) {
+      var classList = "";
+      if (showTimeZone) {
+        classList += "u-ml-- ";
+      }
+      if(showTimeZone === "dropdown" || showTimeZone === "extendedDropdown") {
+        classList += "align-dropdown ";
+      }
+      if (!isValid) {
+        classList += "u-mr-- ";
+      }
+
+      return classList;
+    },
+    /**
+     *
+     *
+     *
+     */
+    _getValidationIconClass: function(isValid){
+      var classList= ['validation-container__icon'];
+
+      if(!isValid) {
+        classList.push('validation-container__icon--failed');
+      }
+      else {
+          classList.push('visuallyhidden');
+      }
+      return classList.join(' ');
+    },
+    /**
+     * This event is fired when the calendar or clock icon has been clicked
+     *
+     * @event px-datetime-entry-icon-clicked
+     * @param {string} dateOrTime - Values can be "Date" or "Time"
+     */
+    _iconClicked: function(evt) {
+
+      this.fire('px-datetime-entry-icon-clicked', {dateOrTime: this.dateOrTime});
+    }
+  });
+</script>

@@ -1,0 +1,334 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      px-vis-xy-chart Demo</title>
+    <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
+    <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+
+    <link rel="import" href="../px-theme/px-theme-styles.html">
+    <!-- <link rel="import" href="../px-dark-theme/px-dark-theme-styles.html"> -->
+    <style include="px-theme-styles" is="custom-style"></style>
+
+    <!-- Import custom element. Note: see comment about relative paths to dependencies in the *.html file referenced below -->
+    <link rel="import" href="px-vis-xy-chart.html" />
+    <link rel="import" href="../iron-ajax/iron-ajax.html" />
+    <link rel="import" href="../px-vis/px-vis-data-converter.html"/>
+    <link rel="import" href="../px-vis/px-vis-chart-navigator.html"/>
+  </head>
+
+  <!-- <body style="padding:30px; background-color: rgb(27,42,51);"> -->
+  <body>
+
+    <template id="demo" is="dom-bind">
+      <h1>Add charts dynamically</h1>
+      <p>This page aims at helping benchmarking dynamically adding charts as well as making sure we don't introduce performance breaking changes. Look in the console for timing results for each batch of charts you've added <button id="btnPerf" style="background-color: salmon">Click me for performance tips!</button></p> 
+      <ul id="tipsList" hidden>Few performance tips:
+        <li>progressive rendering now can be customized through progressiveRenderingPointsPerFrame (16000 by default for lines, 2000 byy default for scatter) and progressiveRenderingMinimumFrames. Increase progressiveRenderingPointsPerFrame for better performance and decrease for smoother drawing. When at the right value no performance cost incurs and drawing is smooth but if value is too small can incur a performance cost (i.e the drawing will take longer, but will always start at the same time, also the UI won't be frozen)</li>
+        <li>progressive rendering is great for big dataset, it can incur a very small performance costs for smaller one. In my opinion this is far offseted by the fact that the UI doesn't freeze</li>
+        <li>scatter exacerbate perfomance issue, i.e big dataset on svg scatter can be very slow. This is <strong>always</strong> true on IE. Always use canvas rendering on IE for scatter. Preferably with progressive rendering</li>
+        <li>using the navigator doesn't come cost free since this is almost a chart itself. It can double the number of points to draw. If performance is an issue consider: not displaying the navigator/using canvas rendering on the navigator/not displaying all series on the navigator by changing the navigator series config</li>
+        <li>reusing charts previously created rather than dynamically creating one every time can help significantly. However this means making sure all previous properties have been appropriately changed and that something changed in order to redraw. This demo presents a really crude example of reusing charts that have been removed but doesn't deal with cleaning previous instances (hence some wrong  config and/or visual artifact can appear)</li>
+      </ul>
+      <div id="bigdiv">
+        <div class="flex flex--col">
+          <input id="counter" type="number" value="1"></input>
+          <input id="reuse" type="checkbox">Reuse from pool</input>
+          <input id="prvResize" type="checkbox">prevent resize</input>
+          <input id="disableNav" type="checkbox" checked>disable Navigator</input>
+          <input id="scatterType" type="checkbox">scatter</input>
+          <input id="rendToCanvas" type="checkbox">render to canvas</input>
+          <input id="noProgr" type="checkbox">no progressive rendering</input>
+          <input id="pointsPerFrame" type="number" value="16000">points per frame</input>
+          <input id="minFrames" type="number" value="1">min frames</input>
+        </div>
+        <button id="btn">~7000 data</button>
+        <button id="btnR">remove</button>
+        <iron-ajax
+          id="dataAjax"
+          url="demo_data.json"
+          handle-as="json"
+          last-response="{{data}}" auto></iron-ajax>
+        <iron-ajax
+          id="eventAjax"
+          url="events.json"
+          handle-as="json"
+          last-response="{{eventData}}" auto>
+        </iron-ajax>
+
+      
+        <!--<px-vis-xy-chart
+          id="chart2"
+          chart-data="{{data}}"
+          height="400"
+          margin='{ "top": "30", "bottom": "60", "left": "80", "right": "100" }'
+          x-axis-config='{"title": "X",
+            "labelPosition": "center",
+            "orientation": "bottom"}'
+          register-config='{
+            "width": 250,
+            "type": "vertical",
+            "forceDateTimeDisplay": true}'
+          tooltip-config='{
+            "forceDateTimeDisplay": true
+          }'
+          series-config='{
+            "firstSerie": {
+              "type": "scatter",
+              "name": "Serie1",
+              "xAxisUnit": "Hz",
+              "yAxisUnit": "Hz",
+              "x": "T48A",
+              "y":"T48B",
+              "axis": {
+                "id": "axis1",
+                "number": 1,
+                "side": "left"
+              }
+            },
+            "secondSerie": {
+              "type": "line",
+              "name": "Serie2",
+              "x": "T48A",
+              "y":"T48B",
+              "axis": {
+                "id": "axis2",
+                "number": 1,
+                "side": "right"
+              }
+            },
+            "third": {
+              "type": "scatter",
+              "name": "Serie3",
+              "x": "T48A",
+              "y":"T48C",
+              "axis": {
+                "id": "axis3",
+                "number": 2,
+                "side": "right"
+              }
+            },
+            "fourth": {
+              "type": "scatter",
+              "markerSymbol": "diamond",
+              "name": "Serie4",
+              "x": "T48A",
+              "y":"T48D",
+              "axis": {
+                "id": "axis4",
+                "number": 2,
+                "side": "right"
+              }
+            }
+          }'
+          event-config='{
+            "Fa Icon": {
+              "color": "blue",
+              "icon": "fa-camera",
+              "type": "fa",
+              "offset": [0, 0]
+            },
+            "Unicode": {
+              "color": "green",
+              "icon": "\uf015",
+              "type": "unicode",
+              "offset": [1, 0]
+            },
+            "Event Png": {
+              "icon": "ge_logo.png",
+              "type": "image",
+              "offset": [0, -20],
+              "size": "20"
+            }
+          }'
+          event-data="{{eventData}}"
+          chart-extents='{
+            "x": ["dynamic","dynamic"],
+            "y": ["dynamic","dynamic"]
+          }'
+          time-domain="[[selectedDomain]]"
+          time-data="Date">
+        </px-vis-xy-chart>
+        <div style="height:100px">
+            <px-vis-chart-navigator
+                id="navigator"
+                x-axis-type="time"
+                y-axis-type="linear"
+                chart-extents='{
+                  "x":["dynamic","dynamic"],
+                  "y":["dynamic","dynamic"]
+                }'
+                margin='{
+                "top": 5,
+                "right": 10,
+                "bottom": 20,
+                "left": 10
+                }'
+                chart-data="[[data]]"
+                series-config='{
+                  "T48A": {
+                  "type": "line",
+                  "name": "Serie2",
+                  "x": "Date",
+                  "y":"T48A"
+                }}'
+                selected-domain="{{selectedDomain}}">
+            </px-vis-chart-navigator>
+          </div>-->
+         
+          </div>
+    </template>
+
+  <script>
+    document.addEventListener('WebComponentsReady', function() {
+      var chart2 = document.getElementById('chart2'),
+          btn = document.getElementById('btn'),
+          btnR = document.getElementById('btnR'),
+          bigdiv = document.getElementById('bigdiv'),
+          bigData = document.getElementById('bigData'),
+          btnLot = document.getElementById('btnBigData'),
+          tipsList = document.getElementById('tipsList'),
+          btnPerf = document.getElementById('btnPerf'),
+
+          counterInput = document.getElementById('counter'),
+          prvResize = document.getElementById('prvResize'),
+          disableNav = document.getElementById('disableNav'),
+          scatterType = document.getElementById('scatterType'),
+          rendToCanvas = document.getElementById('rendToCanvas'),
+          pointsPerFrame = document.getElementById('pointsPerFrame'),
+          noProgr = document.getElementById('noProgr'),
+          minFrames = document.getElementById('minFrames'),
+          reuse = document.getElementById('reuse'),
+          dataAjax = document.getElementById('dataAjax'),
+          eventAjax = document.getElementById('eventAjax'),
+
+          chartNumber = 1,
+          drawingPerSmallCharts = 4,
+          currentIsBigChart = false,
+          chartPool = [];
+
+      var processOptions = function(chart) {
+
+        chart.preventResize = prvResize.checked;
+        chart.disableNavigator = disableNav.checked;
+        chart.renderToCanvas = rendToCanvas.checked;
+        chart.noCanvasProgressiveRendering = noProgr.checked;
+        chart.progressiveRenderingPointsPerFrame = pointsPerFrame.value;
+        chart.progressiveRenderingMinimumFrames = minFrames.value;  
+      }
+
+      btn.addEventListener('click', function() {
+        var newDiv = document.createElement('div'),
+            newChart;
+
+        chartNumber = Number(counterInput.value);
+        drawingPerSmallCharts = disableNav.checked ? 4 : 8;
+        currentIsBigChart = false;
+
+        newDiv.classList.add('divwrapper');
+        console.time('draw ' + chartNumber + ' charts, ' + (rendToCanvas.checked ? 'canvas' : 'svg ') + ', ' + (scatterType.checked ? 'scatter' : 'line'));
+
+        for(var i=0;i <chartNumber; i++) {
+
+          if(reuse.checked) {
+            if(chartPool.length) {
+              newChart = chartPool.pop();
+              newChart.width = newChart.width -1;
+            } else {
+              console.log('failed to reuse chart from chartPool, none available');
+              newChart = document.createElement('px-vis-xy-chart');
+            }
+          } else {
+            newChart = document.createElement('px-vis-xy-chart');
+          }
+          
+          newChart.chartData = dataAjax.lastResponse;
+          newChart.defaultSeriesConfig = {
+            "type": scatterType.checked ? "scatter" : "line"
+          };
+          newChart.registerConfig = {
+            "width": 250,
+            "type": "vertical",
+            "forceDateTimeDisplay": true};
+          newChart.dynamicMenuConfig = [{
+              "name": "Delete",
+              "action": "function(data) { var conf = this.seriesConfig;  delete conf[data.additionalDetail.name]; this.set(\"seriesConfig\", {}); this.set(\"seriesConfig\", conf);}",
+              "eventName": "delete",
+              "icon": "fa-trash"
+            },
+            {
+              "name": "Bring To Front",
+              "action": "function(data) { this.set(\"serieToRedrawOnTop\", data.additionalDetail.name);}",
+              "eventName": "bring-to-front",
+              "icon": "fa-arrow-up"
+            }
+          ];
+          newChart.margin={ "top": "30", "bottom": "60", "left": "80", "right": "100" };
+          newChart.width = 800;
+          newChart.height = 400;
+          newChart.seriesConfig = {"firstSerie":{"name":"Serie1","xAxisUnit":"Hz","yAxisUnit":"Hz","x":"T48A","y":"T48B","axis":{"id":"axis1","number":1,"side":"left"}},"secondSerie":{"name":"Serie2","x":"T48A","y":"T48B","axis":{"id":"axis2","number":2,"side":"right"}},"third":{"name":"Serie3","x":"T48A","y":"T48C","axis":{"id":"axis3","number":3,"side":"right"}},"fourth":{"markerSymbol":"diamond","name":"Serie4","x":"T48A","y":"T48D","axis":{"id":"axis4","number":4,"side":"right"}}};
+          newChart.eventConfig = {"FaIcon":{"color":"blue","icon":"fa-camera","type":"fa","offset":[0,0]},"Unicode":{"color":"green","icon":"\uf015","type":"unicode","offset":[1,0]},"EventPng":{"icon":"ge_logo.png","type":"image","offset":[0,-20],"size":"20"}};
+          newChart.eventData = eventAjax.lastResponse;
+          newChart.timeData = 'Date';
+          newChart.chartExtents = {
+            "x": ["dynamic","dynamic"],
+            "y": ["dynamic","dynamic"]
+          };
+          processOptions(newChart);
+
+
+          Polymer.dom(newDiv).appendChild(newChart);
+        }
+        Polymer.dom(bigdiv).appendChild(newDiv);
+      });
+
+      var counter = 0,
+          bigChartCounter = 0,
+          handler = function() {
+
+        if(currentIsBigChart) {
+          bigChartCounter++;
+
+          if(bigChartCounter%(chartNumber * drawingPerBigCharts) === 0) {
+            console.timeEnd('draw ' + chartNumber + ' big charts, ' + (rendToCanvas.checked ? 'canvas' : 'svg ') + ', ' + (scatterType.checked ? 'scatter' : 'line'));
+          }
+        } else {
+
+          counter++;
+
+          if(counter%(drawingPerSmallCharts*chartNumber) === 0) {
+            console.timeEnd('draw ' + chartNumber + ' charts, ' + (rendToCanvas.checked ? 'canvas' : 'svg ') + ', ' + (scatterType.checked ? 'scatter' : 'line'));
+          }
+        }
+      };
+      document.addEventListener('linefinished', handler);
+      document.addEventListener('px-vis-line-canvas-rendering-ended', handler);
+      document.addEventListener('px-vis-scatter-canvas-rendering-ended', handler);
+      btnR.addEventListener('click', function() {
+        var wrappers = document.getElementsByClassName('divwrapper'),
+            lastWrap = wrappers[wrappers.length - 1];
+
+        if(lastWrap) {
+
+          for(var i=0; i<lastWrap.children.length; i++) {
+            if(lastWrap.children[i].nodeName === 'PX-VIS-XY-CHART') {
+              chartPool.push(lastWrap.children[i]);
+            }
+          }
+
+          Polymer.dom(bigdiv).removeChild(lastWrap);
+        }
+        
+      });
+      btnPerf.addEventListener('click', function() {
+        
+        tipsList.hidden = !tipsList.hidden;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-vis-behavior-common.html" />
+<link rel="import" href="px-vis-behavior-d3.html" />
+
+
+<!--
+Element which creates an Canvas element and context
+
+##### Usage
+
+    <px-vis-canvas
+        canvas-context="{{canvasContext}}"
+        width="[[width]]"
+        height="[[height]]"
+        margin="[[margin]]"
+        offset="[[offset]]">
+    </px-vis-canvas>
+
+@element px-vis-canvas
+@blurb Element which creates a canvas element
+@homepage index.html
+@demo demo.html
+-->
+
+<link rel="import" href="css/px-vis-styles.html">
+
+<dom-module id="px-vis-canvas">
+
+    <template>
+      <style include="px-vis-styles"></style>
+
+      <canvas
+        id="chartCanvas"
+        width="[[width]]"
+        height="[[height]]">
+      </canvas>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: 'px-vis-canvas',
+
+        /****** EVENTS ******/
+        /**
+         * Fired once d3 canvas context has been configured.
+         *
+         * Uses the px-vis-behavior-chart behavior, for listening and setting property, locally or globally.
+         * Detail includes:
+         *
+         * ```
+         * { 'data': canvasContext }
+         * ```
+         *
+         * @event px-vis-canvas-context-updated
+         */
+
+        behaviors: [
+          PxVisBehavior.sizing,
+          PxVisBehavior.commonMethods,
+          PxVisBehaviorD3.canvas
+        ],
+
+        /**
+         * Properties block, expose attribute values to the DOM via 'reflect'
+         *
+         * @property properties
+         * @type Object
+         */
+        properties: {
+          /**
+           * The canvas element
+           *
+           *
+           */
+          _canvas:{
+            type:Object
+          }
+        },
+
+        observers: [
+          '_setCanvas(width,height,margin,offset.*)'
+        ],
+
+        /**
+        * when attached, re-fire set properties for precipitation pattern, as well as the svg element that's inside px-svg.
+        *
+        * @method attached
+        */
+        attached: function(){
+          if(this._doesObjHaveValues(this.canvasContext)){
+            this.fire('px-vis-canvas-context-updated',{ 'data': this.canvasContext, 'dataVar': 'canvasContext', 'method': 'set' });
+          }
+
+          if(this._isDirty && this.canvasContext) {
+            this.canvasContext.save()
+            this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+            this.canvasContext.clearRect(0,0, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
+            this.canvasContext.restore();
+            this._isDirty = false;
+          }
+        },
+        detached: function() {
+          // if(this._isDirty && this.canvasContext) {
+          //   this.canvasContext.save()
+          //   this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+          //   this.canvasContext.clearRect(0,0, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
+          //   this.canvasContext.restore();
+          // }
+          this._isDirty = true;
+        },
+        /**
+         * Configures the canvas and context
+         *
+         */
+        _setCanvas: function(){
+          if(this.width && this.height && this._doesObjHaveValues(this.margin)){
+
+            var context;
+
+            this._canvas = this.$.chartCanvas;
+
+            context = this._canvas.getContext("2d");
+
+            //reset translation so subsequent calls do not keep shifting canvas drawings
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.translate(this.margin.left + this.offset[0], this.margin.top + this.offset[1]);
+
+            //create some base tracking info so we know how many lines we draw later
+            context._pxLinesSeries = {};
+            context._pxLinesTotal = 0;
+            context._pxLinesRedraw = 0;
+            context._pxScatterSeries = {};
+            context._pxScatterTotal = 0;
+            context._pxScatterRedraw = 0;
+            context._translation = [this.margin.left + this.offset[0], this.margin.top + this.offset[1]];
+
+            context.clearCanvas = function() {
+              this.save()
+              this.setTransform(1, 0, 0, 1, 0, 0);
+              this.clearRect(0,0, this.canvas.width, this.canvas.height);
+              this.restore();
+            }.bind(context);
+
+            this.set('canvasContext',context);
+            this.fire('px-vis-canvas-context-updated',{ 'data': context, 'dataVar': 'canvasContext', 'method': 'set' });
+          }
+        },
+    });
+</script>
