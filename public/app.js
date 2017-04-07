@@ -22,7 +22,7 @@ app.config(function ($routeProvider) {
         })
 
         .when('/two', {
-            templateUrl: '/templates/placeHolder.html',
+            templateUrl: '/templates/ScatterPlot.html',
             controller: 'mainController'
         })
 
