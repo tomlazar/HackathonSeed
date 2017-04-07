@@ -51,7 +51,7 @@ exports.authenticate = function(req, res){
             else{
 				// Log the error getting the auth token
                 console.log(error);
-                console.log('error getting auth token')
+                console.log('error getting auth token');
             }
     	})
 
