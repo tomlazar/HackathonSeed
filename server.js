@@ -11,8 +11,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/public/" + "index.html");
 })
 
+
 // KPI routes
-app.get('/api/kpi/:kpiName/:token', kpi.getKpi);
+app.get('/api/kpi/:kpiName', kpi.getKpi);
 
 // Auth route
 app.get('/api/auth/', auth.authenticate);
