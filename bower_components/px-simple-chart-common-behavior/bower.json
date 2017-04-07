@@ -1,0 +1,23 @@
+{
+  "name": "px-simple-chart-common-behavior",
+  "version": "1.6.1",
+  "main": [
+    "px-simple-chart-common-behavior.html"
+  ],
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "px": "~1.4.3",
+    "px-colors-design": "^0.3.0"
+  },
+  "devDependencies": {}
+}

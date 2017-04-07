@@ -1,0 +1,52 @@
+{
+  "name": "px-simple-bar-chart",
+  "version": "1.9.1",
+  "main": [
+    "px-simple-bar-chart.html"
+  ],
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    "px-demo.png",
+    "*.md",
+    ".jshintrc",
+    ".editorconfig",
+    "monogram-wdmk.png",
+    "*.png",
+    "wct.conf.json"
+  ],
+  "keywords": [
+    "web-components"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.1",
+    "px-theme": "^2.0.2",
+    "d3": "^3.0.0",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.4.3",
+    "px-simple-chart-common-behavior": "^1.6.0",
+    "es6-promise": "^3.3.1"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-demo": "^1.4.8"
+  },
+  "homepage": "https://github.com/PredixDev/px-simple-bar-chart",
+  "_release": "1.9.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.9.1",
+    "commit": "3ad4165f3fcec783be373aaad09a83ea945d697c"
+  },
+  "_source": "https://github.com/PredixDev/px-simple-bar-chart.git",
+  "_target": "^1.9.1",
+  "_originalSource": "px-simple-bar-chart",
+  "_direct": true
+}
