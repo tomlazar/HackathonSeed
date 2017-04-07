@@ -1,0 +1,10 @@
+<!-- Import d3 without overwriting other people's d3. Maintain a link to the
+     Px version of d3. -->
+
+<link rel="import" href="px-d3-imports-step-one.html" />
+<script>
+  Px.d3 = d3;
+  if(typeof Px.oldD3 !== 'undefined') {
+    d3 = Px.oldD3;
+  }
+</script>

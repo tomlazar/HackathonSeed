@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-vis-behavior-common.html" />
+<link rel="import" href="px-vis-behavior-d3.html" />
+<link rel="import" href="px-vis-svg.html" />
+<link rel="import" href="px-vis-canvas.html" />
+
+
+<!--
+Element which creates 2 SVG elements, and a canvas element between the two svg elements.
+
+##### Usage
+
+    <px-vis-svg-canvas
+        svg="{{svg}}"
+        canvas-context="{{canvasContext}}"
+        svg-lower="{{svgLower}}"
+        width="[[width]]"
+        height="[[height]]"
+        margin="[[margin]]">
+    </px-vis-svg-canvas>
+
+@element px-vis-svg
+@blurb Element which creates 2 SVG elements, anda  canvas element between the two svg elements.
+@homepage index.html
+@demo demo.html
+-->
+
+<link rel="import" href="css/px-vis-svg-canvas-styles.html">
+
+<dom-module id="px-vis-svg-canvas">
+  <template>
+    <style include="px-vis-svg-canvas-styles"></style>
+
+    <div
+      class="rel-container"
+      style$="height:[[height]]px; width:[[width]]px">
+      <px-vis-svg
+        class="abs-elem inline--flex"
+        svg="{{svgLower}}"
+        px-svg-elem="{{pxSvgElemLower}}"
+        width="[[width]]"
+        height="[[height]]"
+        margin="[[margin]]"
+        offset="[[offset]]">
+      </px-vis-svg>
+      <px-vis-canvas
+        class="abs-elem inline--flex"
+        canvas-context="{{canvasContext}}"
+        width="[[width]]"
+        height="[[height]]"
+        margin="[[margin]]"
+        offset="[[offset]]">
+      </px-vis-canvas>
+      <px-vis-svg
+        class="abs-elem inline--flex"
+        svg="{{svg}}"
+        px-svg-elem="{{pxSvgElem}}"
+        width="[[width]]"
+        height="[[height]]"
+        margin="[[margin]]"
+        offset="[[offset]]">
+      </px-vis-svg>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: 'px-vis-svg-canvas',
+        behaviors: [
+          PxVisBehavior.sizing,
+          PxVisBehaviorD3.canvas,
+          PxVisBehaviorD3.svg,
+          PxVisBehaviorD3.svgLower
+        ],
+
+        /**
+         * Properties block, expose attribute values to the DOM via 'reflect'
+         *
+         * @property properties
+         * @type Object
+         */
+        properties: {
+          //redefine svg prop so it can notify
+          /**
+          * svg is a holder for the d3 instantiated svg container to draw to.
+          * Must be set in ready and passed to all components so they know whom to draw to.
+          *
+          * FUTURE: when Polymer supports SVG, this only need be set on the SVG element.
+          *
+          * @property svg
+          * @type Object
+          */
+          svg: {
+            type: Object,
+            notify: true
+          }
+        },
+    });
+</script>

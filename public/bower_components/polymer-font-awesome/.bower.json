@@ -1,0 +1,53 @@
+{
+  "name": "px-polymer-font-awesome",
+  "version": "0.1.11",
+  "authors": [
+    "Martin Wragg mdwragg@gmail.com",
+    "Runn Vermel runn.vermel@ge.com"
+  ],
+  "description": "Polymer component to allow easy use of Font Awesome icons in your Polymer element.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "polymer-font-awesome.html",
+  "license": "https://github.com/PredixDev/px-polymer-font-awesome/LICENSE.md",
+  "homepage": "https://github.com/PredixDev/px-polymer-font-awesome",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.9",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.7",
+    "px-theme": "^2.0.1"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "~0.6.0",
+    "px-forms-design": "#~0.3.15",
+    "px-tables-design": "#~0.3.12",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#~1.2.3",
+    "px-polymer-font-awesome": "^0.1.8",
+    "px-tabs": "~0.5.1",
+    "px-api-viewer": "~0.1.0",
+    "px-demo-snippet": "^0.6.4",
+    "px-actionable-text-icons-design": "^0.1.0",
+    "px-code-design": "^0.2.11",
+    "px-headings-design": "^0.2.14",
+    "px-list-inline-design": "^0.2.11",
+    "px-dropdown": "^0.12.0",
+    "px-spacing-design": "~0.3.8",
+    "px-toggle-design": "^0.2.12"
+  },
+  "_release": "0.1.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.11",
+    "commit": "4fc72b0f6d8a1f1866ca848c16806fefd482a103"
+  },
+  "_source": "https://github.com/PredixDev/polymer-font-awesome.git",
+  "_target": "^0.1.9",
+  "_originalSource": "px-polymer-font-awesome"
+}

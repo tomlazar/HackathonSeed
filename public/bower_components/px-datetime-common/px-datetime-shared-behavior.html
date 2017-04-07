@@ -1,0 +1,100 @@
+<link rel="import" href="px-datetime-imports.html" />
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+
+<script>
+
+/**
+  ```pxDatetimeSharedBehavior```
+
+  This behavior is for all ```px-datetime``` components.
+
+  Dependencies: momentjs
+
+  @polymerBehavior pxDatetimeSharedBehavior
+*/
+
+var pxDatetimeSharedBehavior = [{
+
+  properties: {
+
+    /**
+     *
+     * Set this attribute when you do not want to allow future dates to be selected (future dates will be disabled and unclickable).
+     *
+     * Defined in: 'pxDatetimeBehavior'
+     *
+     * @default false
+     */
+    blockFutureDates: {
+      type: Boolean,
+      value: false
+    },
+    /**
+     *
+     * Set this attribute when you do not want to allow past dates to be selected (past dates will be disabled and unclickable).
+     *
+     * Defined in: 'pxDatetimeBehavior'
+     *
+     * @default false
+     */
+    blockPastDates: {
+      type: Boolean,
+      value: false
+    },
+    /**
+     *
+     * Moment-timezone string for using a specific timezone. See
+     * http://momentjs.com/timezone/docs/#/data-loading/getting-zone-names/.
+     *
+     * If not provided, tries to guess the current local timezone.
+     */
+    timeZone: {
+      type: String,
+      notify: true,
+      value: function() {
+
+        return Px.moment.tz.guess();
+      },
+      observer: '_timeZoneChanged'
+    }
+  },
+  /**
+  * Takes an ISO 8601 String and returns a moment object.
+  *
+  *
+  * @param {String} timeString
+  */
+  _convertISOtoMoment: function(timeString) {
+    return Px.moment.tz(Px.moment(timeString, Px.moment.ISO_8601), this.timeZone);
+  },
+  /**
+   * Copies the time in toPreserve to dest and returns dest.
+   *
+   */
+  _preserveTime: function(toPreserve, dest) {
+    if(toPreserve && dest) {
+      dest.hours(toPreserve.hours());
+      dest.minutes(toPreserve.minutes());
+      dest.seconds(toPreserve.seconds());
+      dest.milliseconds(toPreserve.milliseconds());
+    }
+    return dest;
+  },
+  /**
+   * Applies the current moment values to the external facing strings or rollback
+   * the current moment values to the external facing strings
+   *
+   */
+  _applyCurrentValues: function(doApply) {
+
+    if(doApply){
+      this._applyMomentToString();
+    } else {
+      this._rollbackMomentFromString();
+    }
+  }
+},Polymer.IronA11yKeysBehavior];
+
+
+
+</script>

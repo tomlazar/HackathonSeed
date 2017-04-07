@@ -29,4 +29,19 @@
 
 </div>
 
+
+<div>
+    <!-- Import element -->
+    <template is="dom-bind">
+        <iron-ajax
+                auto
+                url="/api/kpi/Engine Battery Voltage"
+                handle-as="json"
+                last-response="{{data}}"></iron-ajax>
+
+        <show-json json="{{data}}" />
+    </template>
+   
 <px-simple-bar-chart width="200" height="300" chart-data='[[112,57,53,122,128,120,56,94,102]]' colors='["#265dab"]' legend-labels='[]' legend-order="sequential"></px-simple-bar-chart>
+
+</div>

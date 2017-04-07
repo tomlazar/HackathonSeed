@@ -1,0 +1,48 @@
+{
+  "name": "px-simple-line-chart",
+  "version": "1.7.8",
+  "main": [
+    "px-simple-line-chart.html"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "sass",
+    "*.md",
+    "scripts",
+    ".github",
+    "gulpfile.js",
+    "wct.conf.json",
+    "test",
+    "OSS_Notice.pdf",
+    "*.png",
+    "npm-debug.log"
+  ],
+  "dependencies": {
+    "polymer": "^v1.6.1",
+    "px-theme": "^2.0.1",
+    "d3": "~3.5.6",
+    "px-simple-chart-common-behavior": "^1.5.0",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.4.3",
+    "underscore": "~1.8.3",
+    "px-colors-design": "^0.3.0"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-toggle-design": "^1.1.0",
+    "px-code-design": "^1.1.0",
+    "px-demo": "^1.4.8"
+  },
+  "homepage": "https://github.com/PredixDev/px-simple-line-chart",
+  "_release": "1.7.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.7.8",
+    "commit": "28ac68642d05b5d0f26e62807538eeb247d4138a"
+  },
+  "_source": "https://github.com/PredixDev/px-simple-line-chart.git",
+  "_target": "^1.7.8",
+  "_originalSource": "px-simple-line-chart",
+  "_direct": true
+}

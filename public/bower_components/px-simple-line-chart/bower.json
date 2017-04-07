@@ -1,0 +1,37 @@
+{
+  "name": "px-simple-line-chart",
+  "version": "1.7.8",
+  "main": [
+    "px-simple-line-chart.html"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "sass",
+    "*.md",
+    "scripts",
+    ".github",
+    "gulpfile.js",
+    "wct.conf.json",
+    "test",
+    "OSS_Notice.pdf",
+    "*.png",
+    "npm-debug.log"
+  ],
+  "dependencies": {
+    "polymer": "^v1.6.1",
+    "px-theme": "^2.0.1",
+    "d3": "~3.5.6",
+    "px-simple-chart-common-behavior": "^1.5.0",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.4.3",
+    "underscore": "~1.8.3",
+    "px-colors-design": "^0.3.0"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-toggle-design": "^1.1.0",
+    "px-code-design": "^1.1.0",
+    "px-demo": "^1.4.8"
+  }
+}

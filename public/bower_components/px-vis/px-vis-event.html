@@ -1,0 +1,435 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-vis-behavior-common.html" />
+<link rel="import" href="px-vis-behavior-d3.html" />
+<link rel="import" href="px-vis-behavior-datetime.html"/>
+<link rel="import" href="../px-colors-design/colors.html" />
+<link rel="import" href="fa_codes.html" />
+<link rel="import" href="../px-tooltip/px-tooltip.html"/>
+
+<!--
+d3 element which draws a line and icon on the chart representing an event.
+
+##### Usage
+
+    <px-vis-event
+        svg="[[svg]]"
+        x-axis-type="[[xAxisType]]"
+        clip-path="[[clipPath]]"
+        event-id="[[item.id]]"
+        chart-data="[[item]]"
+        x="[[x]]"
+        y="[[y]]"
+        event-config="[[eventConfig]]">
+    </px-vis-event>
+
+The configuration object allows developers to set the icon used for each event type. 
+
+It should follow the following form:
+
+    eventConfig = {
+      "Event Name 1":{
+        "color": "blue",
+        "icon": "fa-camera",
+        "type": "fa",
+        "offset":[0,0]
+      },
+      "Event Name 2":{
+        "color": "green",
+        "icon": "\uf015",
+        "type": "unicode",
+        "offset":[1,0],
+        "lineWeight": 0
+      },
+      "Event Name 3":{
+        "icon": "Dancing_banana.gif",
+        "type": "image",
+        "offset":[-2,-20],
+        "size":"25"
+      }
+    }
+
+### Styling
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+  `--px-vis-event-line-color` | The default color for the vertical lines below the icon | `$grey9`
+  `--px-vis-event-icon-color` | The default color for the event icon markers | `$gray7`
+  |  |
+  |  |
+  |  |
+  `--px-tooltip-background-color` | The color of the tooltip | `$black`;
+  `--px-tooltip-text-color` | The color of the tooltip text | `$white`;
+  `--px-tooltip-light-background-color` | The color of the light version tooltip | `$white`;
+  `--px-tooltip-light-text-color` | The color of the light version tooltip text | `$black`;
+  `--px-tooltip-light-border-color`| The color of the light version tooltip border |  `$black`;
+
+@element px-vis-event
+@blurb d3 element which draws a line and icon on the chart representing an event.
+@homepage index.html
+@demo demo.html
+-->
+
+<link rel="import" href="css/px-vis-styles.html">
+
+<dom-module id="px-vis-event">
+    <template>
+      <style include="px-vis-styles"></style>
+
+      <px-tooltip
+        id="eventTooltip"
+        smart-orientation
+        delay="10"
+        orientation="[[tooltipOrientation]]">
+        <span>
+          <b>Event</b>: [[eventData.label]] <br/>
+          <b>ID</b>: [[eventData.id]] <br/>
+          <b>[[_getValueTitle(xAxisType)]]</b>[[_getValue(xAxisType, eventData)]]<br/>
+        </span>
+      </px-tooltip>
+    </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'px-vis-event',
+
+    behaviors: [
+      PxVisBehaviorD3.svg,
+      PxVisBehaviorD3.axes,
+      PxVisBehavior.sizing,
+      PxVisBehavior.axisTypes,
+      PxVisBehaviorTime.datetime,
+      PxVisBehaviorD3.clipPath,
+      PxVisBehavior.commonMethods,
+      PxVisBehavior.events,
+      PxVisBehaviorD3.domainUpdate,
+      PxColorsBehavior.baseColors,
+      faCodes
+    ],
+
+    /**
+     * Properties block, expose attribute values to the DOM via 'reflect'
+     *
+     * @property properties
+     * @type Object
+     */
+    properties: {
+      /**
+       * The ID of the event. Either dev set or auto-generated
+       *
+       * @property eventId
+       * @type String
+       */
+      eventId: {
+        type:String,
+        value: '',
+        notify: true,
+        reflectToAttribute: true
+      },
+
+      /**
+       * Holder object for the event svg "g" element
+       *
+       * @property eventGroup
+       * @type Object
+       */
+      eventGroup:{
+        type:Object,
+        value: function() { return {}; }
+      },
+      /**
+       * Holder object for the event svg "line" element
+       *
+       * @property eventLine
+       * @type Object
+       */
+      eventLine:{
+        type:Object,
+        value: function() { return {}; }
+      },
+      /**
+       * Holder object for the event svg icon
+       *
+       * @property eventIcon
+       * @type Object
+       */
+      eventIcon:{
+        type:Object,
+        value: function() { return {}; }
+      },
+      /**
+       * Computed configuration object based on dev set styles and default styles
+       *
+       * @property _thisConfig
+       * @type Object
+       */
+      _thisConfig:{
+        type:Object,
+      value: function() { return {}; }
+      },
+      /**
+       * Specifies the orientation of the event tooltip
+       *
+       * @property tooltipOrientation
+       * @type String
+       */
+      tooltipOrientation: {
+        type: String,
+        value: 'left',
+        notify:true
+      },
+      /**
+       * Specifies the x key for the event data
+       *
+       */
+      xKey: {
+        type: String,
+        value: 'x'
+      },
+      /**
+       * Tracks if the event configuration has been edited
+       *
+       */
+      _eventConfigChanged: {
+        type: Boolean,
+        value: false
+      },
+
+      _animationFrameDone: {
+        type: Boolean,
+        value: false
+      },
+
+      _eventDrawn: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    observers: [
+      '_eventConfigHasChanged(eventConfig.*)',
+      'drawElement(svg, eventData.*, eventConfig.*, _animationFrameDone)',
+      'positionElement(x, domainChanged)',
+      '_addClipPath(clipPath)'
+     ],
+
+     detached: function() {
+       this._eventDrawn = false;
+
+       if(this.eventGroup && this._doesD3HaveValues(this.eventGroup)) {
+         this.eventGroup.remove();
+         this.eventGroup = null;
+         this.eventLine = null;
+         this.eventIcon = null;
+       }
+     },
+
+    ready: function() {
+      window.requestAnimationFrame(this._calcThemeOrConfig.bind(this));
+      // if there is no dev set unique ID, generate one
+      if(!this.eventId) {
+        this.set('eventId', this.generateRandomID('event_'));
+      }
+    },
+
+    _calcThemeOrConfig: function() {
+
+      if(!this.defaultEventConfig) {
+        var eventColor = this._checkThemeVariable("--px-vis-event-icon-color", this.colors[this._defaultDefaultEventConfig.color]);
+        var lineColor = this._checkThemeVariable("--px-vis-event-line-color", this.colors[this._defaultDefaultEventConfig.lineColor]);
+
+        this.defaultEventConfig = {
+          "color": eventColor,
+          'icon': this._defaultDefaultEventConfig.icon,
+          'type': this._defaultDefaultEventConfig.type,
+          'offset': this._defaultDefaultEventConfig.offset,
+          'size': this._defaultDefaultEventConfig.size,
+          'lineColor': lineColor,
+          "lineWeight": this._defaultDefaultEventConfig.lineWeight
+        };
+      }
+
+      this.set('_animationFrameDone', true);
+    },
+
+    /**
+     * Draws or updates the event element.
+     * Called from an observer watching for data and the necessary d3 objects
+     *
+     * @method drawElement
+     */
+    drawElement: function() {
+      this.debounce('drawEvent', function() {
+        if(this.svg && this._doesObjHaveValues(this.eventData) && this._animationFrameDone) {
+
+          if(this.eventGroup && this._doesD3HaveValues(this.eventGroup)) {
+            this._eventDrawn = false;
+            this.eventGroup.remove();
+            this.eventGroup = null;
+          }
+
+          this._processConfiguration();
+
+
+          this.eventGroup = this.svg.append('g')
+            .attr('class','event')
+            .attr('event-id',this.eventId)
+            .attr('id','event_' + this.eventId);
+
+          // draw the path
+          this.eventLine = this.eventGroup.append("line")
+            .attr('stroke', this._checkColorType(this._thisConfig.lineColor))
+            .attr('stroke-width', this._thisConfig.lineWeight);
+
+          this._addIcon();
+
+          this._eventDrawn = true;
+
+          this.positionElement();
+
+          this._addClipPath();
+
+
+          this._addTooltip();
+        }
+      }, 5);
+    },
+
+
+    /**
+     * Updates the position of the event
+     * Called from an observer watching for data and the necessary d3 objects
+     *
+     * @method positionElement
+     */
+    positionElement: function() {
+      if(this.x && this._eventDrawn) {
+        this._positionEvent();
+      }
+    },
+
+    /**
+     * Sets a boolean to true when run
+     *
+     */
+    _eventConfigHasChanged: function() {
+      this._eventConfigChanged = true;
+    },
+
+    /**
+     * Helper to call addClipPath with the elem
+     *
+     * @method _addClipPath
+     */
+    _addClipPath: function() {
+      this.addClipPath(this.eventLine);
+      this.addClipPath(this.eventIcon);
+    },
+
+    /**
+     * Sets the position for the event line and icon
+     *
+     * @method _positionEvent
+     */
+    _positionEvent: function() {
+      this.eventLine
+        .attr("x1", this.x(this.eventData[this.xKey]))
+        .attr("x2", this.x(this.eventData[this.xKey]))
+        .attr("y1", Math.max(this.height - this.margin.top, 0))
+        .attr("y2", 0);
+      this.eventIcon
+        .attr('x',this.x(this.eventData[this.xKey]) - Number(this._thisConfig.size)/2 + this._thisConfig.offset[0])
+        .attr("y", 0 - 5 + this._thisConfig.offset[1]);
+    },
+
+    _addIcon: function() {
+      if(this._thisConfig.type === 'image'){
+        this.eventIcon = this.eventGroup.append("image")
+          .attr("xlink:href", this._thisConfig.icon)
+          .attr("width", this._thisConfig.size + 'px')
+          .attr("height", this._thisConfig.size + 'px');
+      } else if(this._thisConfig.type === 'unicode'){
+        this.eventIcon = this.eventGroup.append("text")
+          .attr('font-family', 'FontAwesome')
+          .attr('font-size', this._thisConfig.size + 'px')
+          .attr('fill', this._checkColorType(this._thisConfig.color))
+          .text(this._thisConfig.icon);
+      } else if(this._thisConfig.type === 'fa'){
+        this.eventIcon = this.eventGroup.append("text")
+          .attr('font-family', 'FontAwesome')
+          .attr('font-size', this._thisConfig.size + 'px')
+          .attr('fill', this._checkColorType(this._thisConfig.color))
+          .text(String.fromCharCode(parseInt(this.fa[this._thisConfig.icon],16)));
+      }
+
+      this.eventIcon
+        .style("cursor","pointer")
+        .attr('id','ei_' + this.eventId);
+
+    },
+
+    /**
+     * Compiles a configuration object by looking if there is a dev set style, or if it should use defaults
+     *
+     * @method _processConfiguration
+     */
+    _processConfiguration:function() {
+      // is there a configuration object for this event type?
+      if(this.eventConfig[this.eventData.label]) {
+        /*
+          check each key (icon, color, etc) of the defaultEventConfig and see if the eventConfig is overwriting that property. If so, set it, otherwise use default
+        */
+        var k = Object.keys(this.defaultEventConfig),
+            i,
+            len = k.length;
+        for(i = 0; i < len; i++){
+          this._thisConfig[k[i]] =  this.eventConfig[this.eventData.label][k[i]] || this.eventConfig[this.eventData.label][k[i]] === 0 ? this.eventConfig[this.eventData.label][k[i]] : this.defaultEventConfig[k[i]];
+        }
+      } else {
+        // else, set everything to default
+        this._thisConfig = this.defaultEventConfig;
+      }
+    },
+    /**
+     * Configures the tooltip for that particuar event
+     *
+     * @method _addTooltip
+     */
+    _addTooltip:function() {
+      this.$.eventTooltip.set('for',this.eventIcon.node());
+    },
+    /**
+     * Formats the datetime to match the dev set format
+     *
+     * @method _formatDatetime
+     */
+    _formatDatetime: function(time,format) {
+      return this.formatTimestamp(time, this.timezone, format);
+    },
+    /**
+     * returns the title value to the tooltip
+     *
+     */
+    _getValueTitle: function(xAxisType) {
+      if(xAxisType === 'time' || xAxisType === 'timeLocal') {
+        return 'Timestamp';
+      } else {
+        return 'X';
+      }
+    },
+    /**
+     * returns the value of the x
+     *
+     */
+    _getValue: function(xAxisType) {
+      if(xAxisType === 'time' || xAxisType === 'timeLocal') {
+        return ': ' + this._formatDatetime(this.eventData[this.xKey], this.firstDateTimeFormat) +
+          ' ' + this.separator + ' ' + this._formatDatetime(this.eventData[this.xKey], this.secondDateTimeFormat);
+      } else {
+        return ': ' + this.eventData[this.xKey];
+      }
+    }
+  });
+</script>
