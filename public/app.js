@@ -72,6 +72,7 @@ app.controller('mainController', function ($scope, $http) {
 
         //end function
     }
+
 //end controller
 });
 
