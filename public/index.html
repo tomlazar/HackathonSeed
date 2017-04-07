@@ -35,25 +35,42 @@
 <body ng-app="predixHackathon">
 
 <nav>
-    <ibm-toolbar>
-        <span main-title>App name</span>
-    </ibm-toolbar>
+   
+<style is="custom-style">
+  ibm-toolbar.dark {
+    --ibm-toolbar-color: #38ACEC;
+    --ibm-toolbar-border-bottom-color: #303030;
+    --ibm-toolbar-background-color: #323232;
+  }
+  ibm-toolbar.dark ibm-toolbar-logo {
+    --ibm-toolbar-logo-color: #ffffff;
+  }
+</style>
+
+<ibm-toolbar class="dark">
+  <a href="/" title="Go home">
+    <ibm-toolbar-logo></ibm-toolbar-logo>
+  </a>
+  <span main-title spacer>Data Analysis </span>
+</ibm-toolbar>
+  
     <ibm-toolbar>
         <div main-title>
             <a href="#/" selectable-item>Predix Code</a>
         </div>
-        <ibm-tags>
+      <ibm-tabs spacer role="navigation">
             <a href="#/Bar" tabindex="-1">
                 <ibm-tag>Bar Graph</ibm-tag>
             </a>
-            <a href="#/Line" tabindex="-2">
+            <a href="#/Line" tabindex="-1">
                 <ibm-tag>Line Graph</ibm-tag>
             </a>
-             <a href="#/Scatter" tabindex="-3">
+             <a href="#/Scatter" tabindex="-1">
                 <ibm-tag>Scatter Graph</ibm-tag>
             </a>
         </ibm-tags>
     </ibm-toolbar>
+   
 
 </nav>
 
