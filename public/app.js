@@ -16,19 +16,18 @@ app.config(function ($routeProvider) {
             controller: 'mainController'
         })
 
-<<<<<<< HEAD
-        .when('/bar', {
-=======
+// <<<<<<< HEAD
+        // .when('/bar', {
+// =======
         .when('/Bar', {
->>>>>>> origin/master
             templateUrl: '/templates/BarChart.html',
             controller: 'mainController'
         })
 
-<<<<<<< HEAD
-        .when('/line', {
-            templateUrl: '/templates/LineChart.html',
-=======
+// <<<<<<< HEAD
+//         .when('/line', {
+//             templateUrl: '/templates/LineChart.html',
+// =======
         .when('/two', {
             templateUrl: '/templates/ScatterPlot.html',
             controller: 'mainController'
@@ -36,7 +35,6 @@ app.config(function ($routeProvider) {
 
         .when('/three', {
             templateUrl: '/templates/placeHolder.html',
->>>>>>> origin/master
             controller: 'mainController'
         });
 });
@@ -81,6 +79,7 @@ app.controller('mainController', function ($scope, $http) {
 
         //end function
     }
+
 //end controller
 });
 

@@ -2,16 +2,31 @@
 <html>
 <head>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js">
+
+        <
+        script
+        src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" ></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
+    <link rel="stylesheet" href="css/index.css" >
+
+    <link rel="import" href="bower_components/px-app-nav/px-app-nav.html">
+    <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="bower_components/show-json/show-json.html">
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="public/app.js" type="text/javascript"></script>
@@ -31,10 +46,9 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="#/">Home</a></li>
-<<<<<<< HEAD
-                <li><a href="#/bar">Bar Chart</a></li>
-                <li><a href="#/line">Line Chart</a></li>
-=======
+
+                <!--<li><a href="#/bar">Bar Chart</a></li>
+                <li><a href="#/line">Line Chart</a></li>-->
                 <li><a href="#/four">Create Comparision Chart</a></li>
 
                 <li><a href="#/Bar">Bar Graph</a></li>
@@ -42,7 +56,6 @@
                 <li><a href="#/three">Scatter Plot</a></li>
 
 
->>>>>>> origin/master
                 <!--<li><a href="#/three">Three</a></li>-->
             </ul>
             <!--<ul class="nav navbar-nav navbar-right">-->
@@ -50,6 +63,46 @@
             <!--</ul>-->
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
+
+
+
+<nav >
+    <px-app-nav
+            nav-items='[
+  {
+    "path": "#/",
+    "icon": "fa-exclamation-triangle",
+    "eventName": "firstItem",
+    "label": "Home"
+  },
+  {
+    "path": "tab2",
+    "icon": "fa-briefcase",
+    "label": "Cases",
+    "subitems": [
+      {
+        "label": "Sub Category 1"
+      },
+      {
+        "label": "Sub Category 2"
+      },
+      {
+        "label": "Sub Category 3"
+      }
+    ]
+  },
+  {
+    "path": "tab3",
+    "icon": "fa-bar-chart",
+    "label": "Analysis"
+  },
+  {
+    "path": "tab4",
+    "icon": "fa-tachometer",
+    "label": "Dashboards"
+  }
+]'></px-app-nav>
+
 </nav>
 
 <body ng-app="predixHackathon">
