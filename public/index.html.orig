@@ -33,13 +33,12 @@
             <ul class="nav navbar-nav">
                 <li><a href="#/">Home</a></li>
                 <li><a href="#/one">Create Comparision Chart</a></li>
-<<<<<<< HEAD
+
                 <li><a href="#/two">Line Graph</a></li>
                 <li><a href="#/three">Scatter Plot</a></li>
                 <li><a href="#/four">Bar Graph</a></li>
-=======
                 <li><a href="#/two">Scatter Plot</a></li>
->>>>>>> 44416c21ff37695b4390b4611d9414c31c2b08fc
+
                 <!--<li><a href="#/three">Three</a></li>-->
             </ul>
             <!--<ul class="nav navbar-nav navbar-right">-->
