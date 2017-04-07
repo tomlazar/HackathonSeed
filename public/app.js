@@ -22,12 +22,12 @@ app.config(function ($routeProvider) {
         })
 
         .when('/two', {
-            templateUrl: '/templates/placeHolder.html',
+            templateUrl: '/templates/PieChart.html',
             controller: 'mainController'
         })
 
         .when('/three', {
-            templateUrl: '/templates/placeHolder.html',
+            templateUrl: '/templates/PieChart.html',
             controller: 'mainController'
         });
 });
