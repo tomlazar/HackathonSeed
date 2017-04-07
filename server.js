@@ -17,7 +17,5 @@ app.get('/api/kpi/:kpiName/:token', kpi.getKpi);
 // Auth route
 app.get('/api/auth/', auth.authenticate);
 
-
-
 app.listen(process.env.PORT || 8080);
 console.log("App listening on port 8080");

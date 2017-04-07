@@ -17,7 +17,7 @@ exports.getKpi = function(req, res){
 			{
 				"name": req.params['kpiName'],
 				"order": "desc",
-				"limit": 2
+				"limit": 100
 			}
 		]
 	};
@@ -43,7 +43,7 @@ exports.getKpi = function(req, res){
         if (!error && response.statusCode == 200) {
             // Send the response back to the requester
 			console.log("Success!");
-            res.send(response.body);
+            res.send(response.body['tags'][0]['results'][0]['values']);
 			
 		}
 		// Not successful request
@@ -59,4 +59,3 @@ exports.getKpi = function(req, res){
     console.log(req.query);
 
 };
-
