@@ -1,5 +1,0 @@
-applications:
-  - name: springmvc-helloworld
-    buildpack: java_buildpack
-    path: target/springmvc-helloworld.war
-    memory: 512MB
