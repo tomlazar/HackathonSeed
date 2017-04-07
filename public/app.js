@@ -16,7 +16,7 @@ app.config(function ($routeProvider) {
             controller: 'mainController'
         })
 
-        .when('/one', {
+        .when('/Bar', {
             templateUrl: '/templates/BarChart.html',
             controller: 'mainController'
         })
