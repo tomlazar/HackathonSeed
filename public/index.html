@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-
     <!-- Angular Material requires Angular.js Libraries -->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -10,19 +8,18 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
 
     <!-- Angular Material Library -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js">
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 
-        <
-        script
-        src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css" >
+    <link rel="stylesheet" href="css/index.css">
 
+    <link rel="import" href="bower_components/ibm-toolbar/ibm-toolbar.html">
     <link rel="import" href="bower_components/px-app-nav/px-app-nav.html">
     <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="bower_components/show-json/show-json.html">
@@ -35,47 +32,24 @@
     <title>Predix:Data Analysis</title>
 </head>
 
+<body ng-app="predixHackathon">
 
-
-<nav >
-    <px-app-nav
-            nav-items='[
-  {
-    "path": "#/",
-    "icon": "fa-exclamation-triangle",
-    "eventName": "firstItem",
-    "label": "Home"
-  },
-  {
-    "path": "tab2",
-    "icon": "fa-briefcase",
-    "label": "Cases",
-    "subitems": [
-      {
-        "label": "Sub Category 1"
-      },
-      {
-        "label": "Sub Category 2"
-      },
-      {
-        "label": "Sub Category 3"
-      }
-    ]
-  },
-  {
-    "path": "tab3",
-    "icon": "fa-bar-chart",
-    "label": "Analysis"
-  },
-  {
-    "path": "tab4",
-    "icon": "fa-tachometer",
-    "label": "Dashboards"
-  }
-]'></px-app-nav>
+<nav>
+    <ibm-toolbar>
+        <span main-title>App name</span>
+    </ibm-toolbar>
+    <ibm-toolbar>
+        <div main-title>
+            <a href="#/" selectable-item>Predix Code</a>
+        </div>
+        <ibm-tags>
+            <a href="#/Bar" tabindex="-1">
+                <ibm-tag>Bar Graph</ibm-tag>
+            </a>
+        </ibm-tags>
+    </ibm-toolbar>
 </nav>
 
-<body ng-app="predixHackathon">
 
 <div id="template">
 

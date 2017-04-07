@@ -1,0 +1,134 @@
+<!--
+@license
+Copyright (c) 2016 The IBM Research Emergent Solutions authors. All rights reserved.
+This code may only be used under the MIT style license found at https://ibmresearch.github.io/LICENSE.txt
+The complete set of authors may be found at https://ibmresearch.github.io/AUTHORS.txt
+The complete set of contributors may be found at https://ibmresearch.github.io/CONTRIBUTORS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>ibm-toolbar demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../../ibm-tabs/ibm-tabs.html">
+    <link rel="import" href="../../ibm-tabs/ibm-tab.html">
+    <link rel="import" href="../ibm-toolbar.html">
+    <link rel="import" href="../ibm-toolbar-logo.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 900px;
+      }
+
+      demo-snippet.grey-background {
+        --demo-snippet-demo: {
+          background-color: #f9f9f9;
+        };
+      }
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Toolbar simple</h3>
+      <demo-snippet class="grey-background">
+        <template>
+          <ibm-toolbar>
+            <span main-title>App name</span>
+          </ibm-toolbar>
+        </template>
+      </demo-snippet>
+
+      <h3>Toolbar with IBM logo</h3>
+      <demo-snippet class="grey-background">
+        <template>
+          <ibm-toolbar>
+            <a href="#" title="Go home">
+              <ibm-toolbar-logo></ibm-toolbar-logo>
+            </a>
+            <span main-title spacer>App name</span>
+          </ibm-toolbar>
+        </template>
+      </demo-snippet>
+
+      <h3>Toolbar can be styled using custom properties</h3>
+      <demo-snippet>
+        <template>
+          <style is="custom-style">
+            ibm-toolbar.dark {
+              --ibm-toolbar-color: #ffffff;
+              --ibm-toolbar-border-bottom-color: #303030;
+              --ibm-toolbar-background-color: #323232;
+            }
+            ibm-toolbar.dark ibm-toolbar-logo {
+              --ibm-toolbar-logo-color: #ffffff;
+            }
+          </style>
+
+          <ibm-toolbar class="dark">
+            <a href="/" title="Go home">
+              <ibm-toolbar-logo></ibm-toolbar-logo>
+            </a>
+            <span main-title spacer>App name</span>
+          </ibm-toolbar>
+        </template>
+      </demo-snippet>
+
+      <h3>Complex toolbar</h3>
+      <demo-snippet class="grey-background">
+        <template>
+          <ibm-toolbar>
+            <div main-title>
+              <a href="/" title="Go home" selectable-item>
+                <ibm-toolbar-logo></ibm-toolbar-logo>
+              </a>
+            </div>
+            <a href="#/account" tabindex="-1" selectable-item>
+              <paper-icon-button icon="account-circle"></paper-icon-button>
+            </a>
+            <a href="#/menu" tabindex="-1" selectable-item>
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            </a>
+          </ibm-toolbar>
+          <ibm-toolbar>
+            <div main-title>
+              <a href="#/" selectable-item>IBM Research</a>
+            </div>
+            <ibm-tabs spacer role="navigation">
+              <a href="#/momentum" tabindex="-1">
+                <ibm-tab>Momentum</ibm-tab>
+              </a>
+              <a href="#/publications" tabindex="-1">
+                <ibm-tab>Publications</ibm-tab>
+              </a>
+              <a href="#/researchers" tabindex="-1">
+                <ibm-tab>Researchers</ibm-tab>
+              </a>
+              <a href="#/history" tabindex="-1">
+                <ibm-tab>History</ibm-tab>
+              </a>
+              <a href="#/labs" tabindex="-1">
+                <ibm-tab>Labs</ibm-tab>
+              </a>
+              <a href="#/careers" tabindex="-1">
+                <ibm-tab>Careers</ibm-tab>
+              </a>
+              <a href="#/community" tabindex="-1">
+                <ibm-tab>Community</ibm-tab>
+              </a>
+            </ibm-tabs>
+          </ibm-toolbar>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
