@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/index.css">
     <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="bower_components/show-json/show-json.html">
 
@@ -25,8 +26,19 @@
 
 
 <div>
-   Bar Chart Page
+    Bar Chart Page
 
 </div>
 
-<px-simple-bar-chart width="200" height="300" chart-data='[[112,57,53,122,128,120,56,94,102]]' colors='["#265dab"]' legend-labels='[]' legend-order="sequential"></px-simple-bar-chart>
+<template is="dom-bind">
+    <iron-ajax
+            auto
+            url="/api/kpi/Engine Battery Voltage"
+            handle-as="json"
+            last-response="{{data}}"></iron-ajax>
+
+    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#265dab"]' legend-labels='[]'
+                         legend-order="sequential"></px-simple-bar-chart>
+</template>
+
+
