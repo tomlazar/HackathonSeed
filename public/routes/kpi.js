@@ -18,7 +18,7 @@ exports.getKpi = function (req, res) {
                 {
                     "name": req.params['kpiName'],
                     "order": "desc",
-                    "limit": 2,
+                    "limit": 500000,
                     "filters": {
                         "attributes": {
                             "AssetUri": "/engine/049bb0c2-fca8-4fc6-af28-558c57a1de86"
@@ -26,7 +26,7 @@ exports.getKpi = function (req, res) {
                     }
 
                 }
-            ],
+            ]
 
         };
 
@@ -53,8 +53,18 @@ exports.getKpi = function (req, res) {
         // If successfull request
         if (!error && response.statusCode == 200) {
             // Send the response back to the requester
-            console.log("Success!");
-            res.send(response.body);
+            var values = response.body['tags'][0]['results'][0]['values'];
+            var freq = {};
+            for (i = 0; i < values.length; i++) {
+                var value = values[i][1];
+                freq[value] == null ? freq[value] = 1 : freq[value]++;
+            }
+
+            var keys = Object.keys(freq);
+
+            var vals = keys.map(function(v) { return freq[v]; });
+
+            res.send([vals]);
 
         }
         // Not successful request
