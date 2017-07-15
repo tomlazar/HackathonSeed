@@ -29,6 +29,11 @@ app.config(function ($routeProvider) {
         .when('/scatter', {
             templateUrl: '/templates/ScatterPlot.html',
             controller: 'mainController'
+        })
+
+        .when('/404', {
+            templateUrl: '/templates/404.html',
+            controller: 'mainController'
         });
 });
 

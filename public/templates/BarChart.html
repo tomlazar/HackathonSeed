@@ -22,15 +22,30 @@
     <title>Predix:Data Analysis</title>
 </head>
 
-<h1>Bar Chart of Data</h1>
+<h1></h1>
 
 
 <div>
-    Bar Chart Page
-
+   
 </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<template is="dom-bind">
+    <iron-ajax
+            auto
+            url="/api/kpi/Engine Battery Voltage"
+            handle-as="json"
+            last-response="{{data}}"></iron-ajax>
+
+    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#265dab"]' legend-labels='[]'
+                         legend-order="sequential"></px-simple-bar-chart>
+</template>
+
+
+=======
+>>>>>>> toms-branch-of-safety
 
 <div>
     <!-- Import element -->
@@ -47,6 +62,7 @@
 <px-simple-bar-chart width="200" height="300" chart-data='[[112,57,53,122,128,120,56,94,102]]' colors='["#265dab"]' legend-labels='[]' legend-order="sequential"></px-simple-bar-chart>
 
 </div>
+<<<<<<< HEAD
 =======
 <template is="dom-bind">
     <iron-ajax
@@ -61,3 +77,6 @@
 
 
 >>>>>>> 855671e448a4dbc30c67aa7fedf600ba55cd4685
+=======
+>>>>>>> master
+>>>>>>> toms-branch-of-safety
