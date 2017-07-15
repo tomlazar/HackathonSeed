@@ -4,13 +4,18 @@ var request = require('request');
  * @author Kyle Duckworth (212326570)
  * @version 01.02.2017
  */
+
 exports.getKpi = function (req, res) {
     // Time series URL to query datapoints
     var timeseries_query_uri = 'https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io/v1/datapoints';
     // Predix zone ID for Waukesha Engine data
     var timeseries_zone_id = 'e3fba85e-d334-409e-87ce-3a17e71b4946';
     // JSON Body for request
+     $scope.choose = function choose(choice){
+console.log('Hi');
+engineName = choice;
 
+}
     var json_data =
         {
             "start": "1y-ago",
@@ -18,10 +23,12 @@ exports.getKpi = function (req, res) {
                 {
                     "name": req.params['kpiName'],
                     "order": "desc",
-                    "limit": 500000,
+                    "limit": 5000,
                     "filters": {
                         "attributes": {
-                            "AssetUri": "/engine/049bb0c2-fca8-4fc6-af28-558c57a1de86"
+                            
+                            "AssetUri": "/engine/" + req.params['engineName']
+                           // "AssetUri": "/engine/049bb0c2-fca8-4fc6-af28-558c57a1de86"
                         }
                     }
                     

@@ -22,61 +22,82 @@
     <title>Predix:Data Analysis</title>
 </head>
 
-<h1></h1>
 
+<body ng-app="predixHackathon"> </body> </html>
+ 
+<div id="choose">
 
-<div>
-   
+<button onClick="choose('/engine/049bb0c2-fca8-4fc6-af28-558c57a1de86')">Engine 1</button>
+
+<button onClick="choose('/engine/14727426-d32e-4feb-a2ec-a89f8c5ab100')">Engine 2</button>
+
+<button onClick="choose('/engine/28880fbe-cb5a-40a7-a885-de4683528fbe')">Engine 3</button>
+
+<button onClick="choose('/engine/2afbd546-8d7f-4c59-8346-d93a92b177ba')">Engine 4</button>
+
+<button onClick="choose('/engine/6f3cd880-2ad8-43ae-a194-08e2400be4bd')">Engine 5</button>
+
+<button onClick="choose('/engine/86d23000-3820-4d56-b755-6ea1302ddc4b')">Engine 6</button>
+
+<button onClick="choose('/engine/892e596d-3sds-4c9e-9094-078245931785')">Engine 7</button>
+
+<button onClick="choose('/engine/892e596d-e734-4c9e-9094-078245931785')">Engine 8</button>
+
+<button onClick="choose('/engine/8c12e00a-7d73-42a5-aef3-8f87298d6748')">Engine 9</button>
+
+<button onClick="choose('/engine/99fefd4b-6503-4e9f-81e4-4a35acd336a8')">Engine 10</button>
+
+<button onClick="choose('/engine/af1135b8-e3a7-4938-967d-4783a8ebafe5')">Engine 11</button>
+
+<button onClick="choose('/engine/cb27ef1b-b0de-494d-877f-32e95b757651')">Engine 12</button>
+
+<h1>Engine Battery Voltage Data</h1>
 </div>
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 <template is="dom-bind">
     <iron-ajax
             auto
-            url="/api/kpi/Engine Battery Voltage"
+            url="/api/kpi/Engine Battery Voltage/28880fbe-cb5a-40a7-a885-de4683528fbe"
             handle-as="json"
-            last-response="{{data}}"></iron-ajax>
+            on-response="{{data}}"></iron-ajax>
 
     <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#265dab"]' legend-labels='[]'
                          legend-order="sequential"></px-simple-bar-chart>
 </template>
-
-
-=======
->>>>>>> toms-branch-of-safety
-
-<div>
-    <!-- Import element -->
-    <template is="dom-bind">
-        <iron-ajax
-                auto
-                url="/api/kpi/Engine Battery Voltage"
-                handle-as="json"
-                last-response="{{data}}"></iron-ajax>
-
-        <show-json json="{{data}}" />
-    </template>
-   
-<px-simple-bar-chart width="200" height="300" chart-data='[[112,57,53,122,128,120,56,94,102]]' colors='["#265dab"]' legend-labels='[]' legend-order="sequential"></px-simple-bar-chart>
-
+<h1>Engine Oil Temp</h1>
 </div>
-<<<<<<< HEAD
-=======
 <template is="dom-bind">
     <iron-ajax
             auto
-            url="/api/kpi/Engine Battery Voltage"
+            url="/api/kpi/Engine Oil Temp/14727426-d32e-4feb-a2ec-a89f8c5ab100"
             handle-as="json"
-            last-response="{{data}}"></iron-ajax>
+            on-response="{{data}}"></iron-ajax>
 
-    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#265dab"]' legend-labels='[]'
+    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#ff0000"]' legend-labels='[]'
                          legend-order="sequential"></px-simple-bar-chart>
 </template>
 
+<h1>Engine Oil Pressure</h1>
+</div>
+<template is="dom-bind">
+    <iron-ajax
+            auto
+            url="/api/kpi/Engine Oil Pressure/8c12e00a-7d73-42a5-aef3-8f87298d6748"
+            handle-as="json"
+            on-response="{{data}}"></iron-ajax>
 
->>>>>>> 855671e448a4dbc30c67aa7fedf600ba55cd4685
-=======
->>>>>>> master
->>>>>>> toms-branch-of-safety
+    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#00ff00"]' legend-labels='[]'
+                         legend-order="sequential"></px-simple-bar-chart>
+</template>
+
+<h1>Engine Power</h1>
+</div>
+<template is="dom-bind">
+    <iron-ajax
+            auto
+            url="/api/kpi/Engine Power/14727426-d32e-4feb-a2ec-a89f8c5ab100"
+            handle-as="json"
+            on-response="{{data}}"></iron-ajax>
+
+    <px-simple-bar-chart width="1000px" height="100px" chart-data='{{data}}' colors='["#FFB6C1"]' legend-labels='[]'
+                         legend-order="sequential"></px-simple-bar-chart>
+</template>
