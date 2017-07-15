@@ -1,0 +1,11 @@
+<link rel="import" href="px-datetime-imports-deep.html" />
+<script>
+  
+  //our version of moment now loaded, save it
+  Px.moment = moment;
+
+  //and restore other version if needed
+  if(typeof Px.oldMoment !== 'undefined') {
+    moment = Px.oldMoment;
+  }
+</script>

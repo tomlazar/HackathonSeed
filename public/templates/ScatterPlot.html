@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="bower_components/show-json/show-json.html">
+
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="public/app.js" type="text/javascript"></script>
+    <link rel="import" href="bower_components/px-simple-bar-chart/px-simple-bar-chart.html"/>
+
+    <link rel="import" href="/bower_components/px-vis-xy-chart/px-vis-xy-chart.html"/>
+    <title>Predix:Data Analysis</title>
+</head>
+
+<h1>Scatter Chart of Data</h1>
+
+<px-vis-xy-chart width="700" height="412.39999771118164" chart-horizontal-alignment="center" chart-vertical-alignment="center" margin='{"top":30,"bottom":60,"left":75,"right":20}' tooltip-config='{"forceDateTimeDisplay":true}' register-config='{"type":"vertical","width":220,"forceDateTimeDisplay":true}' selection-type="xy" chart-data='[{"Date":1468213850000,"T48A":1332,"T48B":1346,"T48C":1330,"T48D":1342,"Line":1340},{"Date":1468213968000,"T48A":1336,"T48B":1343,"T48C":1336,"T48D":1340,"Line":1343},{"Date":1468214133000,"T48A":1341,"T48B":1345,"T48C":1331,"T48D":1333,"Line":1345},{"Date":1468214253000,"T48A":1348,"T48B":1344,"T48C":1343,"T48D":1339,"Line":1350},{"Date":1468214374000,"T48A":1352,"T48B":1346,"T48C":1335,"T48D":1342,"Line":1357},{"Date":1468214564000,"T48A":1341,"T48B":1342,"T48C":1344,"T48D":1346},{"Date":1468214682000,"T48A":1348,"T48B":1353,"T48C":1337,"T48D":1331},{"Date":1468214852000,"T48A":1346,"T48B":1348,"T48C":1339,"T48D":1335},{"Date":1468231470000,"T48A":1353,"T48B":1355},{"Date":1468231590000,"T48A":1359,"T48B":1359},{"Date":1468232041000,"T48A":1357,"T48B":1359},{"Date":1468232184000,"T48A":1357,"T48B":1359},{"Date":1468232301000,"T48A":1353,"T48B":1359},{"Date":1468232417000,"T48A":1353,"T48B":1357},{"Date":1468232576000,"T48A":1353,"T48B":1355},{"Date":1468232693000,"T48A":1355,"T48B":1360},{"Date":1468232845000,"T48A":1355,"T48B":1355},{"Date":1468232966000,"T48A":1353,"T48B":1359},{"Date":1468233083000,"T48A":1355,"T48B":1357}]' series-config='{"firstSerie":{"type":"scatter","name":"Serie1","xAxisUnit":"Hz","yAxisUnit":"Hz","x":"T48A","y":"T48B","axis":{"id":"axis1","number":1,"side":"left"}},"secondSerie":{"type":"line","name":"Serie2","x":"T48A","y":"Line","axis":{"id":"axis2","number":2,"side":"left"}},"thirdSerie":{"type":"scatter","name":"Serie1","xAxisUnit":"Hz","yAxisUnit":"Hz","x":"T48A","y":"T48B","axis":{"id":"axis1","number":1,"side":"left"}}}' chart-extents='{"x":["dynamic","dynamic"],"y":["dynamic","dynamic"]}' event-data='[{"id":"123","label":"Fa Icon","x":"1334"},{"id":"456","label":"Unicode","x":"1342"},{"id":"789","label":"Default","x":"1346"}]' event-config='{"Fa Icon":{"color":"blue","icon":"fa-camera","type":"fa","offset":[0,0]},"Unicode":{"color":"green","icon":"","type":"unicode","offset":[1,0]},"Event Png":{"icon":"ge_logo.png","type":"image","offset":[0,-20],"size":"20"}}' x-axis-config='{"title":"X","labelPosition":"center","orientation":"bottom"}' y-axis-config='{"title":"Y","labelPosition":"center","orientation":"left"}' time-data="Date" dynamic-menu-config='[{"name":"Delete","action":"function(data) {var conf = this.seriesConfig;delete conf[data.additionalDetail.name];this.set(\"seriesConfig\", {}); this.set(\"seriesConfig\", conf);","eventName":"delete","icon":"fa-trash"},{"name":"Bring To Front","action":"function(data) {this.set(\"serieToRedrawOnTop\", data.additionalDetail.name);}","eventName":"bring-to-front","icon":"fa-arrow-up"}]' toolbar-config='{"config":{"advancedZoom":true,"pan":true,"tooltip":true,"logHover":{"buttonGroup":2,"tooltipLabel":"The submenu item of this menu will define custom mouse interaction","icon":"fa-leaf","subConfig":{"customClick":{"icon":"fa-coffee","buttonGroup":3,"tooltipLabel":"define some custom mouse interactions on chart","eventName":"my-custom-click","actionConfig":{"mousedown":"function(mousePos) { console.log(\"custom click on chart. Context is the chart. Mouse pos is available: \" + JSON.stringify(mousePos))}","mouseup":"function(mousePos) { console.log(\"custom action on mouse up the chart \" + JSON.stringify(mousePos));}","mouseout":"function(mousePos) { console.log(\"custom action on mouse out the chart \" + JSON.stringify(mousePos));}","mousemove":"function(mousePos) { console.log(\"custom action on hovering the chart \");}"}},"customClick2":{"buttonGroup":3,"icon":"fa-fire-extinguisher","tooltipLabel":"Remove all custom interactions","actionConfig":{"mousedown":null,"mouseup":null,"mouseout":null,"mousemove":null}}}}}}' nav-height="100" nav-margin='{"top":5,"right":10,"bottom":20,"left":10}' nav-series-config='{"T48A":{"type":"line","name":"Trend","x":"Date","y":"T48A"}}'></px-vis-xy-chart>

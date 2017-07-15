@@ -1,0 +1,71 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>px-datetime-common Demo</title>
+    <!-- Requires Webcomponents.js polyfill is provided by the page for browsers that don't support html imports -->
+    <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../px-theme/px-theme-styles.html">
+    <style include="px-theme-styles" is="custom-style"></style>
+
+    <!-- Import custom element. Note: see comment about relative paths to dependencies in the *.html file referenced below -->
+    <link rel="import" href="px-datetime-buttons.html"/>
+    <link rel="import" href="px-datetime-entry.html"/>
+
+
+  </head>
+
+  <body>
+
+    <template id="just-for-demo" is="dom-bind">
+      <h4>px-datetime-entry with options</h4>
+
+      <px-datetime-entry
+        id="entry"
+        date-or-time="{{dateOrTime}}"
+        moment-format="{{momentFormat}}"
+        show-time-zone="dropdown"
+        time-zone="{{timeZone}}"
+        block-future-dates="{{blockFutureDates}}"
+        block-past-dates="{{blockPastDates}}"
+        is-valid="{{isValidd}}"
+        hide-icon="{{hideIcon}}"
+        is-selected="{{isSelected}}"
+        >
+      </px-datetime-entry>
+      <br>
+      <h3>Properties</h3>
+      <div>Block future dates<input type="checkbox" checked="{{blockFutureDates::change}}"></input></div>
+      <div>Block past dates<input type="checkbox" checked="{{blockPastDates::change}}"></input></div>
+      <div>Hide icon<input type="checkbox" checked="{{hideIcon::change}}"></input></div>
+      <div>Moment format: <input id="momentFormat" type="text" value="{{momentFormat::input}}"></input></div>
+      <div>Date or time: <input id="dateOrTime" type="text" value="{{dateOrTime::input}}"></input></div>
+      <div>Time zone: <input id="timeZone" type="text" value="{{timeZone::input}}"></input></div>
+      <div>Show time zone:
+        <input id="showTimeZone" type="text" value="{{showTimeZone::input}}">
+        </input> [Accepted values: 'dropdown', 'extendedDropdown', 'text', 'abbreviatedText']
+      </div>
+      <h3>Readonly Properties</h3>
+      <div>Is Valid: <input type="checkbox" disabled checked="{{isValidd::change}}"></input></div>
+      <div>Is Selected: <input type="checkbox" disabled checked="{{isSelected::change}}"></input></div>
+    </template>
+
+
+    <script type="text/javascript">
+
+      document.addEventListener('WebComponentsReady', function() {
+        var entry = document.getElementById('entry'),
+            momentFormat = document.getElementById('momentFormat'),
+            dateOrTime = document.getElementById('dateOrTime');
+
+
+        momentFormat.value = entry.momentFormat;
+        dateOrTime.value = entry.dateOrTime;
+        timeZone.value = entry.timeZone;
+      });
+
+    </script>
+  </body>
+</html>

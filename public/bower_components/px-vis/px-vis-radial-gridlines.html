@@ -1,0 +1,156 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="px-vis-behavior-common.html" />
+<link rel="import" href="px-vis-behavior-d3.html" />
+<link rel="import" href="../px-colors-design/colors.html" />
+
+
+<!--
+Drawing object which adds radial (circular) gridlines to the chart.
+
+##### Usage
+
+    <px-vis-radial-gridlines
+        svg="[[svg]]"
+        axis="[[y]]"
+        domain-changed="[[domainChanged]]"
+        margin="[[margin]]"
+        tick-values="[[drawnTickValues]]">
+    </px-vis-radial-gridlines>
+
+##### d3 reference
+https://github.com/mbostock/d3/wiki/SVG-Axes
+The gridlines still make use of the d3.axis object, just with different settings
+
+### Styling
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+  `--px-vis-gridlines-color` | The color for the gridlines | `$gray3`
+
+@element px-vis-radial-gridlines
+@blurb Drawing object which adds gridlines to the chart.
+@homepage index.html
+@demo demo.html
+-->
+<link rel="import" href="css/px-vis-styles.html">
+
+<dom-module id="px-vis-radial-gridlines">
+    <template>
+      <style include="px-vis-styles"></style>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+
+        is: 'px-vis-radial-gridlines',
+
+        behaviors: [
+          PxVisBehaviorD3.svg,
+          PxVisBehavior.commonMethods,
+          PxVisBehaviorD3.axis,
+          PxVisBehaviorD3.axisConfig,
+          PxColorsBehavior.baseColors,
+          PxVisBehaviorD3.domainUpdate
+        ],
+
+        /**
+         * Properties block, expose attribute values to the DOM via 'reflect'
+         *
+         * @property properties
+         * @type Object
+         */
+        properties: {
+
+          /**
+           * Holder for the instantiated d3 grid
+           *
+           * @property _grid
+           * @type Object
+           */
+          gridSvg: {
+            type: Object
+          },
+          /**
+           * An x,y amount to move the grid to allow for labels and titles
+           *
+           * @property translateAmt
+           * @type Array
+           */
+          translateAmt: {
+            type: Array,
+            value: function() { return [0,0]; }
+          },
+          tickValues: {
+              type: Array,
+              value: function() { return []; }
+          },
+          currentDomainY: {
+              type: Array,
+              value: function() { return []; }
+          }
+        },
+
+        observers: [
+          'drawElement(domainChanged, axis, margin, svg, tickValues, currentDomainY)'
+        ],
+
+        /**
+         * Method fired via observer which draws the gridlines
+         *
+         * @method _drawElement
+         */
+        drawElement: function() {
+          this.debounce('draw_grid', function() {
+            //clean the svg
+            //remove everything in the svg so we can start a clean draw
+            var node = this.svg.node();
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+
+            var radius = Math.max(0, this.axis.range()[1] - this.axis.range()[0]);
+
+            //draw the lines
+            var ga = this.svg.append('g')
+                .attr('class', 'a axis')
+                .attr('stroke', this._checkThemeVariable("--px-vis-gridlines-color", this.colors.grey4))
+                .attr('stroke-width', '1')
+            .selectAll('g')
+                //data is our degree markings that are not occupied by axes
+                .data([30,60,120,150,210,240,310,340])
+            .enter().append('g')
+                .attr('transform', function(d) { return 'rotate(' + -d + ')'; });
+
+            ga.append('line')
+                .attr('x2', radius);
+
+            //draw the circles
+            //if we have ticks, use them, otherwise generate some from the scale
+            var tickValues = this.tickValues.length > 0 ? this.tickValues : this.axis.ticks(5).slice(1),
+            gr;
+
+            //make sure we have an outer circle.
+            if(this.currentDomainY.length > 1) {
+                tickValues.push(this.currentDomainY[1]);
+            }
+
+            gr = this.svg.append('g')
+                .attr('class', 'r axis')
+                .attr('fill', 'none')
+                .attr('stroke', this._checkThemeVariable("--px-vis-gridlines-color", this.colors.grey4))
+                .selectAll('g')
+                    .data(tickValues)
+                .enter().append('g');
+
+                gr.exit().remove();
+
+            gr.append('circle')
+                // pass in our scale to use as a callback function
+                .attr('r', this.axis);
+          },5);
+        }
+    });
+</script>

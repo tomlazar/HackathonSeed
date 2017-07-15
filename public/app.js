@@ -16,18 +16,18 @@ app.config(function ($routeProvider) {
             controller: 'mainController'
         })
 
-        .when('/Bar', {
+        .when('/bar', {
             templateUrl: '/templates/BarChart.html',
             controller: 'mainController'
         })
 
-        .when('/two', {
-            templateUrl: '/templates/ScatterPlot.html',
+        .when('/line', {
+            templateUrl: '/templates/LineChart.html',
             controller: 'mainController'
         })
 
-        .when('/three', {
-            templateUrl: '/templates/placeHolder.html',
+        .when('/scatter', {
+            templateUrl: '/templates/ScatterPlot.html',
             controller: 'mainController'
         })
 
